@@ -81,8 +81,11 @@ function AjouterPresence({ session, etudiants, onChange }) {
 
 function Session({ session, etudiants, onChange }) {
   const envoi = useEnvoi()
+  const [confirmation, setConfirmation] = useState(false)
 
+  // EF10 — la clôture est définitive (RG2, RG13, RG20) : elle se confirme dans la page, jamais par alert()
   async function cloturer() {
+    setConfirmation(false)
     if (await envoi.envoyer(() => cloturerSession(session.id), () => 'Session clôturée.')) onChange()
   }
 
@@ -90,10 +93,17 @@ function Session({ session, etudiants, onChange }) {
     <li>
       <p>
         <strong>{session.titre}</strong> — code {session.code}{' '}
-        {session.cloturee ? <em>(clôturée)</em> : (
-          <button type="button" className="lien" onClick={cloturer} disabled={envoi.envoi}>Clôturer</button>
+        {session.cloturee ? <em>(clôturée)</em> : !confirmation && (
+          <button type="button" className="lien" onClick={() => setConfirmation(true)} disabled={envoi.envoi}>Clôturer</button>
         )}
       </p>
+      {confirmation && (
+        <p role="group" aria-label="Confirmer la clôture">
+          Clôturer « {session.titre} » ? Plus aucune présence, aucun dépôt ni aucune relecture ne sera accepté.{' '}
+          <button type="button" onClick={cloturer}>Oui, clôturer</button>{' '}
+          <button type="button" className="lien" onClick={() => setConfirmation(false)}>Annuler</button>
+        </p>
+      )}
       <MessageErreur erreur={envoi.erreur} />
       {!session.cloturee && <AjouterPresence session={session} etudiants={etudiants} onChange={onChange} />}
     </li>
