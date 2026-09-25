@@ -32,15 +32,19 @@ Chaque entrée répond aux trois mêmes questions :
 
 ---
 
-## Étape 3 — Enveloppe
+## Étape 3 — Enveloppe (11h36 → 11h54)
 
-**Fait :**
+**Fait :** bug et changement traités séparément. **Bug** : issue #32 ouverte avec l'analyse et la façon de reproduire, puis test de reproduction qui échoue (commit `2e3b577`), puis correctif (verrou `SELECT … FOR UPDATE` + re-vérification) sur une branche dédiée, PR #37. **Changement** : issues #33 à #36, analyse mise à jour d'abord (cahier des charges v2, D1, D2, D4 — PR #38), migration **V3 ajoutée** sans toucher V1/V2 (PR #39), note retenue et provisoire + contrat v1.3 (PR #40), écrans (PR #41).
 
-**Bloqué :**
+**Bloqué :** ~5 min à traduire le signalement du client : nos insertions de présence ne se gênent pas entre elles ; le conflit venait de la relance d'affectation (RG9) faite dans la même transaction — deux présences simultanées affectaient le même exercice en attente et la seconde perdait sa présence au rollback. ~5 min pour rendre le test **déterministe** (générateur aléatoire de test qui fait attendre chaque transaction l'autre) plutôt que d'espérer un entrelacement. ~5 min sur V3 : sous H2, retirer l'ancienne contrainte d'unicité laissait son index (la clé étrangère s'appuyait dessus).
 
-**IA :**
+**IA :** a proposé la cause, le test et le correctif. Vérifié : le test **échoue avant** le correctif sur exactement la violation annoncée (`uk_relecture_exercice`) et passe après ; V3 appliquée sur une vraie base PostgreSQL **déjà remplie**, avec comparaison SQL des exercices, relectures et notes avant/après (identiques) ; le scénario du client rejoué de bout en bout (note provisoire 12 puis définitive 13,50, moyenne du tableau recalculée).
 
 **Ce que j'ai sorti du périmètre pour absorber le changement, et pourquoi :**
+- **#18 — remplacer le lien (Could)** : la seule Could, faible valeur pour le client, et la règle Q13 (« tant que personne n'a commencé à le relire ») devient ambiguë avec deux relecteurs.
+- **#17 — présence session par session (Should)** : le tableau affiche déjà le nombre de présences (champ imposé) ; le détail est un confort.
+- **#15 — voir sa note (Should)** n'est pas sacrifiée mais **absorbée** par #35 : avec une note provisoire, l'étudiant doit la voir, elle devient un Must.
+- Décision « à partir de maintenant » (H13) : les exercices déjà relus par un seul pair gardent leur note définitive plutôt que de devenir provisoires rétroactivement — plus simple, et fidèle aux mots du client.
 
 ---
 
