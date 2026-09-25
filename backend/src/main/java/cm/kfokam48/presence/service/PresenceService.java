@@ -23,13 +23,15 @@ public class PresenceService {
     private final PresenceRepository presences;
     private final SessionCoursRepository sessions;
     private final EtudiantRepository etudiants;
+    private final AffectationService affectation;
     private final Clock horloge;
 
     public PresenceService(PresenceRepository presences, SessionCoursRepository sessions,
-            EtudiantRepository etudiants, Clock horloge) {
+            EtudiantRepository etudiants, AffectationService affectation, Clock horloge) {
         this.presences = presences;
         this.sessions = sessions;
         this.etudiants = etudiants;
+        this.affectation = affectation;
         this.horloge = horloge;
     }
 
@@ -51,6 +53,7 @@ public class PresenceService {
             throw Erreurs.dejaPresent();                                              // RG3
         }
         Presence presence = presences.save(new Presence(session, etudiant, SourcePresence.ETUDIANT, maintenant));
+        affectation.reaffecterEnAttente(session.getId());                             // RG9
         return PresenceDto.de(presence);
     }
 
