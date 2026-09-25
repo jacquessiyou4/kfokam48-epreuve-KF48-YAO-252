@@ -13,6 +13,8 @@ public interface RelectureRepository extends JpaRepository<Relecture, Long> {
 
     Optional<Relecture> findByExerciceId(Long exerciceId);
 
+    boolean existsByExerciceId(Long exerciceId);
+
     List<Relecture> findByRelecteurIdOrderByRendueAtAscAssigneeAtAsc(Long relecteurId);
 
     /** Tableau (ENF2) : l'exercice est chargé avec la relecture, pas une requête par ligne. */

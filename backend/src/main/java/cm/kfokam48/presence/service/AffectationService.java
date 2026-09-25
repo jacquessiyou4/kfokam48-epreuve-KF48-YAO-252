@@ -41,6 +41,9 @@ public class AffectationService {
      */
     @Transactional
     public void affecter(Exercice exercice) {
+        if (relectures.existsByExerciceId(exercice.getId())) {
+            return; // bug #32 : une transaction concurrente vient de l'affecter (RG7)
+        }
         Long auteurId = exercice.getEtudiant().getId();
         List<Etudiant> eligibles = presences.findBySessionId(exercice.getSession().getId()).stream()
                 .map(Presence::getEtudiant)
@@ -54,10 +57,14 @@ public class AffectationService {
         exercice.marquerRelecteurAffecte();
     }
 
-    /** RG9 : appelé à chaque nouvelle présence dans la session (transition T5 de D4). */
+    /**
+     * RG9 : appelé à chaque nouvelle présence dans la session (transition T5 de D4).
+     * Les exercices en attente sont verrouillés : deux présences simultanées ne peuvent plus
+     * les affecter toutes les deux (bug #32).
+     */
     @Transactional
     public void reaffecterEnAttente(Long sessionId) {
-        exercices.findBySessionIdAndStatut(sessionId, StatutExercice.EN_ATTENTE_RELECTEUR)
+        exercices.verrouillerParSessionEtStatut(sessionId, StatutExercice.EN_ATTENTE_RELECTEUR)
                 .forEach(this::affecter);
     }
 }
