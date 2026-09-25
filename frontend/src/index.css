@@ -22,3 +22,5 @@ td.attente { background: #fff3cd; font-weight: 700; }
 section section { margin-top: 20px; }
 .relectures { list-style: none; padding: 0; }
 .relectures li { border: 1px solid #ddd; border-radius: 8px; padding: 12px; margin-bottom: 12px; background: #fff; }
+.provisoire { color: #8a5a00; font-style: italic; }
+.commentaire { margin: 4px 0 0 12px; color: #444; }

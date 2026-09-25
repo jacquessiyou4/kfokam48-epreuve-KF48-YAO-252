@@ -52,3 +52,6 @@ export const deposerExercice = (sessionId, etudiantId, lien) =>
 export const listerRelectures = (etudiantId) => requete(`/etudiants/${etudiantId}/relectures`)
 export const rendreRelecture = (relectureId, note, commentaire, relecteurId) =>
   requete(`/relectures/${relectureId}`, { methode: 'POST', corps: { note: Number(note), commentaire, relecteurId } })
+
+// EF11 v2 — mes exercices, note retenue provisoire ou définitive
+export const listerMesExercices = (etudiantId) => requete(`/etudiants/${etudiantId}/exercices`)

@@ -68,7 +68,10 @@ function Tableau({ tableau }) {
               <td>{l.nom}</td>
               <td>{l.presences}</td>
               <td>{l.exercicesDeposes}</td>
-              <td>{l.moyenne ?? '—'}</td>
+              <td>
+                {l.moyenne ?? '—'}
+                {l.moyenneProvisoire && <span className="provisoire"> provisoire</span>}
+              </td>
               <td className={l.exercicesEnAttente > 0 ? 'attente' : undefined}>{l.exercicesEnAttente}</td>
               <td className={l.relecturesEnAttente > 0 ? 'attente' : undefined}>{l.relecturesEnAttente}</td>
             </tr>

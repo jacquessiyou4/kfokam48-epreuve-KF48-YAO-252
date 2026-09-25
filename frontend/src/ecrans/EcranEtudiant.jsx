@@ -1,13 +1,43 @@
 import { useState } from 'react'
-import { deposerExercice, listerSessions, marquerPresence } from '../api/client.js'
+import { deposerExercice, listerMesExercices, listerSessions, marquerPresence } from '../api/client.js'
 import { useAppel } from '../api/useAppel.js'
 import ChoixEtudiant from '../composants/ChoixEtudiant.jsx'
 import { Chargement, MessageErreur } from '../composants/Etat.jsx'
 import { useEnvoi } from '../composants/useEnvoi.js'
 
 const LIBELLES_STATUT = {
-  EN_ATTENTE_RELECTURE: 'un camarade a été désigné pour le relire',
-  EN_ATTENTE_RELECTEUR: 'aucun camarade présent pour le relire pour l’instant, il sera désigné dès qu’un étudiant arrive',
+  EN_ATTENTE_RELECTURE: 'des camarades ont été désignés pour le relire',
+  EN_ATTENTE_RELECTEUR: 'aucun camarade présent pour le relire pour l’instant, ils seront désignés dès que des étudiants arrivent',
+  RELU_PARTIELLEMENT: 'une relecture sur deux rendue',
+  RELU: 'relu',
+}
+
+// EF11 v2 — la note retenue et son caractère provisoire viennent de l'API (F3)
+function MesExercices({ etudiant, version }) {
+  const exercices = useAppel(() => listerMesExercices(etudiant.id), [etudiant.id, version])
+  if (exercices.chargement) return <Chargement />
+  if (exercices.erreur) return <MessageErreur erreur={exercices.erreur} />
+  return (
+    <section>
+      <h3>Mes exercices</h3>
+      {exercices.donnees.length === 0 ? <p>Aucun exercice déposé.</p> : (
+        <ul className="relectures">
+          {exercices.donnees.map((e) => (
+            <li key={e.id}>
+              <p><strong>{e.sessionTitre}</strong> — {LIBELLES_STATUT[e.statut] ?? e.statut}</p>
+              {e.noteRetenue !== null && (
+                <p>
+                  Note retenue : <strong>{e.noteRetenue}/20</strong>{' '}
+                  {e.noteProvisoire && <span className="provisoire">provisoire — en attente de la seconde relecture</span>}
+                </p>
+              )}
+              {e.commentaires.map((c, i) => <p key={i} className="commentaire">« {c} »</p>)}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  )
 }
 
 // EF3 — marquer sa présence avec le code
@@ -37,7 +67,7 @@ function MarquerPresence({ etudiant }) {
 }
 
 // EF5 — déposer le lien de son exercice pour une session non clôturée
-function DeposerExercice({ etudiant }) {
+function DeposerExercice({ etudiant, onDepose }) {
   const [sessionId, setSessionId] = useState('')
   const [lien, setLien] = useState('')
   const sessions = useAppel(() => listerSessions(etudiant.promotionId), [etudiant.promotionId])
@@ -47,7 +77,10 @@ function DeposerExercice({ etudiant }) {
     e.preventDefault()
     const ok = await envoi.envoyer(() => deposerExercice(sessionId, etudiant.id, lien),
       (r) => `Exercice déposé : ${LIBELLES_STATUT[r.statut] ?? r.statut}.`)
-    if (ok) setLien('')
+    if (ok) {
+      setLien('')
+      onDepose()
+    }
   }
 
   if (sessions.chargement) return <Chargement />
@@ -77,6 +110,7 @@ function DeposerExercice({ etudiant }) {
 }
 
 export default function EcranEtudiant() {
+  const [version, setVersion] = useState(0)
   return (
     <section>
       <h2>Espace étudiant</h2>
@@ -84,7 +118,8 @@ export default function EcranEtudiant() {
         {(etudiant) => (
           <>
             <MarquerPresence etudiant={etudiant} />
-            <DeposerExercice etudiant={etudiant} />
+            <DeposerExercice etudiant={etudiant} onDepose={() => setVersion((v) => v + 1)} />
+            <MesExercices etudiant={etudiant} version={version} />
           </>
         )}
       </ChoixEtudiant>
