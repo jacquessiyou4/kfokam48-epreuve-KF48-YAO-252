@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -64,18 +65,46 @@ class AffectationServiceTest {
         assertThat(exercice.getStatut()).isEqualTo(StatutExercice.EN_ATTENTE_RELECTURE);
     }
 
-    @Test
-    void rg8_leTirageCouvreTousLesPresentsEligibles() {
+    @RepeatedTest(50)
+    void rg7v2_deuxRelecteursDifferentsJamaisLAuteur() {
         presents(auteur, camarade, autreCamarade);
+        Exercice exercice = new Exercice(session, auteur, "https://x.cm", T0);
+
+        service.affecter(exercice);
+
+        ArgumentCaptor<Relecture> relecture = ArgumentCaptor.forClass(Relecture.class);
+        verify(relectures, times(2)).save(relecture.capture());
+        List<Etudiant> tires = relecture.getAllValues().stream().map(Relecture::getRelecteur).toList();
+        assertThat(tires).containsExactlyInAnyOrder(camarade, autreCamarade);
+        assertThat(exercice.getStatut()).isEqualTo(StatutExercice.EN_ATTENTE_RELECTURE);
+    }
+
+    @Test
+    void rg8_leTirageEstAleatoireParmiPlusDeDeuxEligibles() {
+        Etudiant quatrieme = avecId(new Etudiant("Quatrième", promotion), 4L);
+        presents(auteur, camarade, autreCamarade, quatrieme);
         ArgumentCaptor<Relecture> relecture = ArgumentCaptor.forClass(Relecture.class);
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 100; i++) {
             service.affecter(new Exercice(session, auteur, "https://x.cm", T0));
         }
 
-        verify(relectures, org.mockito.Mockito.times(200)).save(relecture.capture());
-        List<Etudiant> tires = relecture.getAllValues().stream().map(Relecture::getRelecteur).distinct().toList();
-        assertThat(tires).containsExactlyInAnyOrder(camarade, autreCamarade);
+        verify(relectures, times(200)).save(relecture.capture());
+        assertThat(relecture.getAllValues().stream().map(Relecture::getRelecteur).distinct().toList())
+                .containsExactlyInAnyOrder(camarade, autreCamarade, quatrieme);
+    }
+
+    @Test
+    void rg9v2_unRelecteurDejaAffecteNEstPasRetireEtIlNEnManqueQuUn() {
+        presents(auteur, camarade, autreCamarade);
+        Exercice exercice = avecId(new Exercice(session, auteur, "https://x.cm", T0), 9L);
+        when(relectures.findByExerciceIdOrderByIdAsc(9L)).thenReturn(List.of(new Relecture(exercice, camarade, T0)));
+
+        service.affecter(exercice);
+
+        ArgumentCaptor<Relecture> relecture = ArgumentCaptor.forClass(Relecture.class);
+        verify(relectures).save(relecture.capture());
+        assertThat(relecture.getValue().getRelecteur()).isSameAs(autreCamarade);
     }
 
     @Test

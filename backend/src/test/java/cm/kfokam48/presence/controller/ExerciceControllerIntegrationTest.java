@@ -46,8 +46,10 @@ class ExerciceControllerIntegrationTest {
                 .andReturn().getResponse().getContentAsString();
 
         Long exerciceId = ((Number) JsonPath.read(corps, "$.id")).longValue();
-        var relecteur = relectures.findByExerciceId(exerciceId).orElseThrow().getRelecteur().getId();
-        assertThat(relecteur).isIn(1L, 3L, 4L, 6L).isNotEqualTo(2L);
+        // RG7 v2 : deux relecteurs différents, présents, jamais l'auteur
+        var relecteurs = relectures.findByExerciceIdOrderByIdAsc(exerciceId).stream()
+                .map(r -> r.getRelecteur().getId()).toList();
+        assertThat(relecteurs).hasSize(2).doesNotHaveDuplicates().allMatch(id -> java.util.List.of(1L, 3L, 4L, 6L).contains(id));
 
         deposer(2, 2, "https://github.com/belinga/autre").andExpect(status().isConflict())
                 .andExpect(jsonPath("$.code").value("EXERCICE_DEJA_DEPOSE"));
@@ -91,12 +93,19 @@ class ExerciceControllerIntegrationTest {
                 .andExpect(jsonPath("$.statut").value("EN_ATTENTE_RELECTEUR"))
                 .andReturn().getResponse().getContentAsString();
         Long exerciceId = ((Number) JsonPath.read(corps, "$.id")).longValue();
-        assertThat(relectures.findByExerciceId(exerciceId)).isEmpty();
+        assertThat(relectures.findByExerciceIdOrderByIdAsc(exerciceId)).isEmpty();
 
-        // L'étudiant 8 arrive : l'affectation est retentée et c'est lui qui relit
+        // L'étudiant 8 arrive : l'affectation est retentée, il devient le premier relecteur
         mvc.perform(post("/api/presences").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"code\":\"" + code + "\",\"etudiantId\":8}")).andExpect(status().isCreated());
-        assertThat(relectures.findByExerciceId(exerciceId).orElseThrow().getRelecteur().getId()).isEqualTo(8L);
+        assertThat(relectures.findByExerciceIdOrderByIdAsc(exerciceId)).extracting(r -> r.getRelecteur().getId())
+                .containsExactly(8L);
+
+        // L'étudiant 9 arrive : le second relecteur manquant est affecté (RG9 v2, T8 de D4)
+        mvc.perform(post("/api/presences").contentType(MediaType.APPLICATION_JSON)
+                .content("{\"code\":\"" + code + "\",\"etudiantId\":9}")).andExpect(status().isCreated());
+        assertThat(relectures.findByExerciceIdOrderByIdAsc(exerciceId)).extracting(r -> r.getRelecteur().getId())
+                .containsExactly(8L, 9L);
     }
 
     @Test
