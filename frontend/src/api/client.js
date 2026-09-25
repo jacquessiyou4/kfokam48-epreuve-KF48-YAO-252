@@ -47,3 +47,8 @@ export const marquerPresence = (code, etudiantId) =>
 // EF5 — dépôt d'exercice
 export const deposerExercice = (sessionId, etudiantId, lien) =>
   requete('/exercices', { methode: 'POST', corps: { sessionId: Number(sessionId), etudiantId, lien } })
+
+// EF7, EF8 — relectures
+export const listerRelectures = (etudiantId) => requete(`/etudiants/${etudiantId}/relectures`)
+export const rendreRelecture = (relectureId, note, commentaire, relecteurId) =>
+  requete(`/relectures/${relectureId}`, { methode: 'POST', corps: { note: Number(note), commentaire, relecteurId } })
