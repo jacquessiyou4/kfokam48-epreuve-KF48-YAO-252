@@ -11,7 +11,7 @@ Réf. `EFx` · Règles `RGx` · Priorité **Must / Should / Could** · Estimatio
 
 ### Résumé de la tâche
 
-<!-- Deux ou trois phrases : pourquoi ce ticket existe. -->
+<!-- Deux ou trois phrases : pourquoi cette issue existe. -->
 
 ### Fonctionnement actuel
 
@@ -39,7 +39,7 @@ Réf. `EFx` · Règles `RGx` · Priorité **Must / Should / Could** · Estimatio
 * [ ] Tests : une règle métier en unitaire, l'endpoint en intégration
 * [ ] Contrat `api/contrat.yaml` et diagrammes à jour si le comportement change
 * [ ] Migration Flyway versionnée si le schéma change
-* [ ] Branche dédiée, PR qui ferme ce ticket, `main` sain après fusion
+* [ ] Branche dédiée, PR qui ferme cette issue, `main` sain après fusion
 
 ### Références
 
