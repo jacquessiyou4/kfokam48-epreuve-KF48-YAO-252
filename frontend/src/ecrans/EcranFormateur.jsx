@@ -112,7 +112,7 @@ function Sessions({ sessions, etudiants, onChange }) {
 }
 
 // EF9 — la moyenne est affichée telle que l'API la calcule (F3)
-function Tableau({ tableau }) {
+export function Tableau({ tableau }) {
   if (tableau.chargement) return <Chargement />
   if (tableau.erreur) return <MessageErreur erreur={tableau.erreur} />
   if (tableau.donnees.length === 0) return <p>Aucun étudiant dans cette promotion.</p>
