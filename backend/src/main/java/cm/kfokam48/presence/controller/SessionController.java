@@ -12,9 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import cm.kfokam48.presence.dto.AjouterPresenceRequete;
 import cm.kfokam48.presence.dto.OuvrirSessionRequete;
+import cm.kfokam48.presence.dto.PresenceDto;
 import cm.kfokam48.presence.dto.SessionDto;
 import cm.kfokam48.presence.dto.SessionOuverteDto;
+import cm.kfokam48.presence.service.PresenceService;
 import cm.kfokam48.presence.service.SessionService;
 import jakarta.validation.Valid;
 
@@ -23,9 +26,11 @@ import jakarta.validation.Valid;
 public class SessionController {
 
     private final SessionService service;
+    private final PresenceService presences;
 
-    public SessionController(SessionService service) {
+    public SessionController(SessionService service, PresenceService presences) {
         this.service = service;
+        this.presences = presences;
     }
 
     @PostMapping
@@ -37,6 +42,12 @@ public class SessionController {
     @GetMapping
     public List<SessionDto> lister(@RequestParam Long promotionId) {
         return service.lister(promotionId);
+    }
+
+    @PostMapping("/{id}/presences")
+    @ResponseStatus(HttpStatus.CREATED)
+    public PresenceDto ajouterPresence(@PathVariable Long id, @Valid @RequestBody AjouterPresenceRequete requete) {
+        return presences.ajouterParFormateur(id, requete.etudiantId());
     }
 
     @PostMapping("/{id}/cloture")

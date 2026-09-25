@@ -57,6 +57,31 @@ public class PresenceService {
         return PresenceDto.de(presence);
     }
 
+    /**
+     * EF4 — présence ajoutée à la main par le formateur (Q14), même après expiration du code,
+     * mais pas après clôture. Elle est marquée source = FORMATEUR (RG15).
+     */
+    @Transactional
+    public PresenceDto ajouterParFormateur(Long sessionId, Long etudiantId) {
+        SessionCours session = sessions.findById(sessionId)
+                .orElseThrow(() -> Erreurs.sessionInconnue(sessionId));
+        Etudiant etudiant = etudiants.findById(etudiantId)
+                .orElseThrow(() -> Erreurs.etudiantInconnu(etudiantId));
+        if (!etudiant.appartientA(session.getPromotion())) {
+            throw Erreurs.etudiantHorsPromotion();                                    // RG19
+        }
+        if (session.estCloturee()) {
+            throw Erreurs.sessionCloturee();
+        }
+        if (presences.existsBySessionIdAndEtudiantId(sessionId, etudiantId)) {
+            throw Erreurs.dejaPresent();                                              // RG3
+        }
+        Presence presence = presences.save(
+                new Presence(session, etudiant, SourcePresence.FORMATEUR, horloge.instant()));
+        affectation.reaffecterEnAttente(sessionId);                                   // RG9
+        return PresenceDto.de(presence);
+    }
+
     /** Le code est saisi au téléphone : on tolère espaces et minuscules. */
     static String normaliser(String code) {
         return code.trim().toUpperCase(Locale.ROOT);
