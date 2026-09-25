@@ -1,0 +1,33 @@
+// Couche d'accès à l'API (F3) : tous les appels passent par ici, aucun fetch ailleurs.
+// Une erreur de l'API ({ code, message }) est levée sous forme d'ErreurApi.
+
+export class ErreurApi extends Error {
+  constructor(statut, code, message) {
+    super(message)
+    this.statut = statut
+    this.code = code
+  }
+}
+
+async function requete(chemin, { methode = 'GET', corps } = {}) {
+  let reponse
+  try {
+    reponse = await fetch(`/api${chemin}`, {
+      method: methode,
+      headers: corps ? { 'Content-Type': 'application/json' } : undefined,
+      body: corps ? JSON.stringify(corps) : undefined,
+    })
+  } catch {
+    throw new ErreurApi(0, 'RESEAU', 'Serveur injoignable. Vérifiez votre connexion.')
+  }
+  const texte = await reponse.text()
+  const donnees = texte ? JSON.parse(texte) : null
+  if (!reponse.ok) {
+    throw new ErreurApi(reponse.status, donnees?.code ?? 'INCONNUE', donnees?.message ?? `Erreur ${reponse.status}`)
+  }
+  return donnees
+}
+
+// EF2 — promotions et étudiants
+export const listerPromotions = () => requete('/promotions')
+export const listerEtudiants = (promotionId) => requete(`/promotions/${promotionId}/etudiants`)
