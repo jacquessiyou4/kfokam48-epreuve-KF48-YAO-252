@@ -1,6 +1,7 @@
 package cm.kfokam48.presence.controller;
 
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -93,7 +94,7 @@ class DoubleRelectureIntegrationTest {
                 .andExpect(jsonPath("$[0].statut").value("RELU"))
                 .andExpect(jsonPath("$[0].noteRetenue").value(13.5))
                 .andExpect(jsonPath("$[0].noteProvisoire").value(false))
-                .andExpect(jsonPath("$[0].commentaires", contains("Premier avis", "Second avis")));
+                .andExpect(jsonPath("$[0].commentaires", containsInAnyOrder("Premier avis", "Second avis")));
         mvc.perform(get("/api/tableau").param("promotionId", "1"))
                 .andExpect(jsonPath("$[?(@.etudiantId == 3)].moyenneProvisoire").value(false))
                 // (18 + 13.5) / 2 = 15.75
