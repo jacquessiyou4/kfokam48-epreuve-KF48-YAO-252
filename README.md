@@ -83,7 +83,7 @@ npm ci && npm test
 |---|---|
 | [`docs/CAHIER_DES_CHARGES.md`](docs/CAHIER_DES_CHARGES.md) | Exigences EF, règles de gestion RG, hypothèses et contradictions tranchées (v2) |
 | [`docs/diagrammes/`](docs/diagrammes) | D1 cas d'utilisation, D2 modèle de données, D3 séquence « marquer sa présence », D4 cycle de vie d'un exercice |
-| [`api/contrat.yaml`](api/contrat.yaml) | Contrat OpenAPI (v1.4) : les 5 opérations imposées et celles ajoutées |
+| [`api/contrat.yaml`](api/contrat.yaml) | Contrat OpenAPI (v1.5) : les 5 opérations imposées et celles ajoutées |
 | [`docs/JOURNAL.md`](docs/JOURNAL.md) | Journal de bord, une entrée par étape |
 | [`CHANGELOG.md`](CHANGELOG.md) | Évolutions par version, avec issues et pull requests |
 

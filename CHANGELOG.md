@@ -4,7 +4,7 @@ Toutes les évolutions notables du projet. Chaque ligne renvoie à son issue et 
 
 ## [1.0.1] — 25/09/2026
 
-Revue après soumission : aucune fonctionnalité nouvelle, aucune migration, contrat inchangé (v1.4).
+Revue après soumission : aucune fonctionnalité nouvelle, aucune migration ; contrat v1.4 → v1.5 (retrait d'une opération morte).
 
 ### Ajouté
 - Modèles d'issue (story, bug) et de pull request au format d'issue complet : fonctionnement actuel, résultats attendus, non-régression, Definition of Done (#47, PR #50).
@@ -14,6 +14,9 @@ Revue après soumission : aucune fonctionnalité nouvelle, aucune migration, con
 ### Documentation
 - Les PR de livraison #45 et #46, ouvertes sans issue, sont rattachées à l'issue #49 (#49, PR #52).
 - Un seul terme, « issue », comme le sujet révisé (#55, PR #56).
+
+### Retiré
+- `PUT /api/exercices/{id}` et ses codes `PAS_AUTEUR`, `EXERCICE_INCONNU` retirés du contrat (v1.5) : l'opération décrivait EF14, sacrifiée à l'étape 3 (#18), et n'a jamais été exposée. Chaque opération du contrat est désormais implémentée (#57, PR #58).
 
 ## [1.0] — 25/09/2026
 
