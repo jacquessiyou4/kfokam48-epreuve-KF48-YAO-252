@@ -2,6 +2,17 @@
 
 Toutes les évolutions notables du projet. Chaque ligne renvoie à son issue et à sa pull request.
 
+## [1.0.1] — 25/09/2026
+
+Revue après soumission : aucune fonctionnalité nouvelle, aucune migration, contrat inchangé (v1.4).
+
+### Ajouté
+- Modèles d'issue (story, bug) et de pull request au format de ticket complet : fonctionnement actuel, résultats attendus, non-régression, Definition of Done (#47, PR #50).
+- Tests automatiques du frontend avec Vitest : couche API et tableau du formateur, dont la preuve que la moyenne affichée vient de l'API (F3, RG17) ; `npm test` (#48, PR #51).
+
+### Documentation
+- Les PR de livraison #45 et #46, ouvertes sans issue, sont rattachées au ticket #49 (#49, PR #52).
+
 ## [1.0] — 25/09/2026
 
 Version finale : le changement de besoin de l'étape 3 est intégré, le bug signalé par le client est corrigé, les trois exigences Should restantes sont livrées.
@@ -22,6 +33,9 @@ Version finale : le changement de besoin de l'étape 3 est intégré, le bug sig
 - Clôture d'une session par le formateur, qui fige présences, dépôts et relectures (#14, PR #42).
 - Présence ajoutée à la main par le formateur, marquée `FORMATEUR` et visible dans le tableau (#13, PR #43).
 - Blocage de 2 minutes après 5 codes erronés (#16, PR #44).
+
+### Documentation
+- `CHANGELOG.md` 0.1 et 1.0, README de livraison avec parcours de vérification (PR #45) ; analyse et journal alignés sur le sujet révisé à cinq étapes (PR #46). Ces deux PR n'avaient pas d'issue : rattachées après coup à #49.
 
 ### Retiré du périmètre (re-priorisation de l'étape 3)
 - Remplacement du lien d'un exercice (#18) et présence session par session dans le tableau (#17) : sacrifiés pour absorber le changement de besoin — justification dans le cahier des charges v2 et le journal.
