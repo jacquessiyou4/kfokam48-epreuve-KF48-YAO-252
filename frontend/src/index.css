@@ -20,3 +20,5 @@ button.lien { width: auto; margin: 0 0 0 8px; padding: 2px 8px; }
 td.attente { background: #fff3cd; font-weight: 700; }
 .saisie-code { font-size: 1.6rem; letter-spacing: 0.3em; text-transform: uppercase; }
 section section { margin-top: 20px; }
+.relectures { list-style: none; padding: 0; }
+.relectures li { border: 1px solid #ddd; border-radius: 8px; padding: 12px; margin-bottom: 12px; background: #fff; }
