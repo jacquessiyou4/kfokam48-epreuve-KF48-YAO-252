@@ -41,4 +41,19 @@ public final class Erreurs {
         return new ErreurMetierException(HttpStatus.FORBIDDEN, "ETUDIANT_HORS_PROMOTION",
                 "Cet étudiant n'appartient pas à la promotion de cette session.");
     }
+
+    public static ErreurMetierException lienInvalide() {
+        return new ErreurMetierException(HttpStatus.BAD_REQUEST, "LIEN_INVALIDE",
+                "Le lien doit être une adresse web complète commençant par http:// ou https://.");
+    }
+
+    public static ErreurMetierException exerciceDejaDepose() {
+        return new ErreurMetierException(HttpStatus.CONFLICT, "EXERCICE_DEJA_DEPOSE",
+                "Un exercice a déjà été déposé par cet étudiant pour cette session.");
+    }
+
+    public static ErreurMetierException sessionCloturee() {
+        return new ErreurMetierException(HttpStatus.CONFLICT, "SESSION_CLOTUREE",
+                "La session est clôturée : cette opération n'est plus possible.");
+    }
 }

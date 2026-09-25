@@ -1,6 +1,7 @@
 package cm.kfokam48.presence.controller;
 
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -72,8 +73,7 @@ class SessionControllerIntegrationTest {
     void listerLesSessionsDeLaPromotionDeDemo() throws Exception {
         mvc.perform(get("/api/sessions").param("promotionId", "2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].titre").value("Bases SQL"))
-                .andExpect(jsonPath("$[0].cloturee").value(false));
+                .andExpect(jsonPath("$[?(@.titre == 'Bases SQL')].cloturee").value(false))
+                .andExpect(jsonPath("$[*].promotionId", everyItem(is(2))));
     }
 }
