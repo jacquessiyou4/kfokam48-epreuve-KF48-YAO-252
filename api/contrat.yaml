@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Contrat imposé — Épreuve finale KFOKAM48
-  version: "1.1"
+  version: "1.2"
   description: |
     Les cinq opérations décrites ici doivent exister EXACTEMENT ainsi :
     mêmes chemins, mêmes verbes, mêmes codes de statut, même format d'erreur.
@@ -124,9 +124,10 @@ paths:
       tags: [imposé]
       summary: Un étudiant dépose le lien de son exercice
       description: |
-        EF5, EF6 · RG8, RG9, RG12, RG13, RG18, RG19.
-        Le relecteur est affecté dans la même transaction : `statut` vaut
-        EN_ATTENTE_RELECTURE si un relecteur a été tiré au sort, sinon EN_ATTENTE_RELECTEUR.
+        EF5, EF6 · RG7, RG8, RG9, RG12, RG13, RG18, RG19.
+        v1.2 : DEUX relecteurs différents sont tirés au sort dans la même transaction ; `statut` vaut
+        EN_ATTENTE_RELECTURE si au moins un relecteur a été affecté, sinon EN_ATTENTE_RELECTEUR.
+        Un relecteur manquant est affecté à la présence suivante dans la session (RG9).
       requestBody:
         required: true
         content:
@@ -431,8 +432,10 @@ components:
 
     StatutExercice:
       type: string
-      enum: [EN_ATTENTE_RELECTEUR, EN_ATTENTE_RELECTURE, RELU]
-      description: Voir D4
+      enum: [EN_ATTENTE_RELECTEUR, EN_ATTENTE_RELECTURE, RELU_PARTIELLEMENT, RELU]
+      description: |
+        Voir D4. v1.2 (changement de besoin de l'étape 3) : ajout de RELU_PARTIELLEMENT,
+        une relecture rendue sur deux, note retenue provisoire.
 
     Promotion:
       type: object

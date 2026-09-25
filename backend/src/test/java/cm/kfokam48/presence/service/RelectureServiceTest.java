@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -43,10 +44,15 @@ class RelectureServiceTest {
     private final Exercice exercice = avecId(new Exercice(session, auteur, "https://x.cm", T0), 9L);
     private final Relecture relecture = avecId(new Relecture(exercice, relecteur, T0), 3L);
 
+    private final Etudiant secondRelecteur = avecId(new Etudiant("Second", promotion), 4L);
+    private final Relecture secondeRelecture = avecId(new Relecture(exercice, secondRelecteur, T0), 6L);
+
     @BeforeEach
     void preparer() {
         exercice.marquerRelecteurAffecte();
         when(relectures.findById(3L)).thenReturn(Optional.of(relecture));
+        when(relectures.findById(6L)).thenReturn(Optional.of(secondeRelecture));
+        when(relectures.findByExerciceIdOrderByIdAsc(9L)).thenReturn(List.of(relecture, secondeRelecture));
     }
 
     @ParameterizedTest
@@ -55,7 +61,7 @@ class RelectureServiceTest {
         var rendue = service.rendre(3L, new BigDecimal(note), "Bien", 2L);
 
         assertThat(rendue.rendue()).isTrue();
-        assertThat(exercice.getStatut()).isEqualTo(StatutExercice.RELU);
+        assertThat(exercice.getStatut()).isEqualTo(StatutExercice.RELU_PARTIELLEMENT);
     }
 
     @ParameterizedTest
@@ -65,6 +71,15 @@ class RelectureServiceTest {
                 .isInstanceOf(ErreurMetierException.class)
                 .extracting("code").isEqualTo("NOTE_INVALIDE");
         assertThat(relecture.estRendue()).isFalse();
+    }
+
+    @Test
+    void rg23_premiereRelecture_reluPartiellement_puisSeconde_relu() {
+        service.rendre(3L, BigDecimal.valueOf(12), "Premier avis", 2L);
+        assertThat(exercice.getStatut()).isEqualTo(StatutExercice.RELU_PARTIELLEMENT);
+
+        service.rendre(6L, BigDecimal.valueOf(15), "Second avis", 4L);
+        assertThat(exercice.getStatut()).isEqualTo(StatutExercice.RELU);
     }
 
     @Test

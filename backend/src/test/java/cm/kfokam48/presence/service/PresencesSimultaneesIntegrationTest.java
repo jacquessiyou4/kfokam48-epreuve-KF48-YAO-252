@@ -100,6 +100,9 @@ class PresencesSimultaneesIntegrationTest {
             resultat.get(); // relance l'exception si une des deux présences a échoué
         }
         assertThat(presenceRepository.findBySessionId(session.id())).hasSize(3);
-        assertThat(relectureRepository.findByExerciceId(exercice.id())).isPresent();
+        // RG7 v2 : les deux arrivants deviennent ses deux relecteurs, sans doublon ni perte de présence
+        assertThat(relectureRepository.findByExerciceIdOrderByIdAsc(exercice.id()))
+                .extracting(r -> r.getRelecteur().getId())
+                .containsExactlyInAnyOrder(8L, 9L);
     }
 }

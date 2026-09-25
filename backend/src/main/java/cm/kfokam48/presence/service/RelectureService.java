@@ -65,7 +65,10 @@ public class RelectureService {
             throw Erreurs.sessionCloturee();                                          // RG20
         }
         relecture.rendre(noteEntiere, commentaire.trim(), horloge.instant());
-        exercice.marquerRelu();                                                       // D4, T7
+        long rendues = relectures.findByExerciceIdOrderByIdAsc(exercice.getId()).stream()
+                .filter(Relecture::estRendue)
+                .count();
+        exercice.enregistrerRelecturesRendues((int) rendues);                         // D4 v2, T7a / T7b
         return RelectureAFaireDto.de(relecture);
     }
 
