@@ -14,3 +14,4 @@ button { cursor: pointer; margin-top: 8px; }
 .tableau-conteneur { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; }
 th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; }
+button.lien { width: auto; margin: 0 0 0 8px; padding: 2px 8px; }
