@@ -10,6 +10,10 @@ Chaque entrée répond aux trois mêmes questions :
 
 ---
 
+> **Note sur le premier commit.** Le dépôt commence par `[JALON] depart` : c'est ce que demandait la version du `LISEZ-MOI` remise en début d'épreuve (« Vérifie que tu peux pousser : `git commit --allow-empty -m "[JALON] depart"` »). La version révisée remise à 12h02 demande de ne pas utiliser le préfixe `[JALON]` pour ce test. Le commit est déjà poussé sur `main` : le retirer imposerait un `push --force`, que le sujet sanctionne. Il reste donc en place ; les trois jalons notés sont `[JALON] analyse`, `[JALON] v0.1` et `[JALON] v1.0`, dans cet ordre.
+
+---
+
 ## Étape 1 — Analyse et conception (09h35 → 10h35)
 
 **Fait :** cahier des charges v1 (14 EF, 8 ENF, 21 RG, 12 hypothèses H1–H12, contradiction Q10/Q15 tranchée), quatre diagrammes Mermaid (D1 cas d'utilisation, D2 modèle de données, D3 séquence « marquer sa présence », D4 bonus états d'un exercice), contrat d'API complété en v1.1 (8 opérations ajoutées ; le message du commit 5c4de7c en annonçait 7 par erreur, corrigé par un commit dédié sans réécrire `main`), 18 issues créées avec labels Must (12) / Should (5) / Could (1). `.gitignore` posé avant tout code.
@@ -58,17 +62,7 @@ Chaque entrée répond aux trois mêmes questions :
 
 ---
 
-## Étape 5 — Épreuve Git
-
-**Fait :**
-
-**Bloqué :**
-
-**IA :**
-
----
-
-## Étape 6 — Soumission
+## Étape 5 — Soumission
 
 **Fait :**
 
