@@ -10,7 +10,7 @@ Chaque entrée répond aux trois mêmes questions :
 
 ---
 
-> **Note sur le premier commit.** Le dépôt commence par `[JALON] depart` : c'est ce que demandait la version du `LISEZ-MOI` remise en début d'épreuve (« Vérifie que tu peux pousser : `git commit --allow-empty -m "[JALON] depart"` »). La version révisée remise à 12h02 demande de ne pas utiliser le préfixe `[JALON]` pour ce test. Le commit est déjà poussé sur `main` : le retirer imposerait un `push --force`, que le sujet sanctionne. Il reste donc en place ; les trois jalons notés sont `[JALON] analyse`, `[JALON] v0.1` et `[JALON] v1.0`, dans cet ordre.
+> **Note sur le premier commit.** Le dépôt commence par `[JALON] depart` : c'est ce que demandait la version du `LISEZ-MOI` remise en début d'épreuve (« Vérifie que tu peux pousser : `git commit --allow-empty -m "[JALON] depart"` »). La version révisée remise à 12h02 renomme ce commit de test `chore: verification du depot` et interdit le préfixe `[JALON]` pour autre chose que les trois jalons. Le commit est déjà poussé sur `main` : le retirer imposerait un `push --force`, que le sujet sanctionne. Il reste donc en place ; les trois jalons notés sont `[JALON] analyse`, `[JALON] v0.1` et `[JALON] v1.0`, dans cet ordre.
 
 ---
 
@@ -76,7 +76,7 @@ Chaque entrée répond aux trois mêmes questions :
 
 ## Revue après soumission (13h45 → 14h10)
 
-**Fait :** relecture du dépôt contre le barème du sujet révisé. Trois tickets ouverts au format complet (fonctionnement actuel, résultats attendus, non-régression, Definition of Done), chacun sur sa branche avec sa PR : modèles d'issue et de PR (#47, PR #50), tests automatiques du frontend (#48, PR #51), rattachement des PR de livraison #45 et #46 à un ticket (#49, PR #52). `CHANGELOG.md` 1.0.1. La structure imposée du dépôt est gardée telle quelle.
+**Fait :** relecture du dépôt contre le barème du sujet révisé. Trois issues ouvertes au format complet (fonctionnement actuel, résultats attendus, non-régression, Definition of Done), chacune sur sa branche avec sa PR : modèles d'issue et de PR (#47, PR #50), tests automatiques du frontend (#48, PR #51), rattachement des PR de livraison #45 et #46 à une issue (#49, PR #52). `CHANGELOG.md` 1.0.1. La structure imposée du dépôt est gardée telle quelle.
 
 **Bloqué :** ~5 min : `npm install` (npm 10) plantait sur les dépendances de Vitest 4 ; installé avec npm 11, puis vérifié que `npm ci` sous l'image `node:22-alpine` (npm 10) reconstruit le frontend. Deux défauts ne se corrigent pas sans réécrire `main`, donc restent visibles et assumés : le premier commit `[JALON] depart` (consigne de l'ancien LISEZ-MOI) et les PR #45 / #46 sans issue au moment de leur fusion.
 
