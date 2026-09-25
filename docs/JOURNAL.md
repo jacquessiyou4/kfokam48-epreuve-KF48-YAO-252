@@ -52,13 +52,13 @@ Chaque entrée répond aux trois mêmes questions :
 
 ---
 
-## Étape 4 — Version finale
+## Étape 4 — Version finale (11h54 → 12h10)
 
-**Fait :**
+**Fait :** les trois Should restantes livrées, chacune sur sa branche avec sa PR : clôture de session (#14, PR #42), présence ajoutée par le formateur et visible dans le tableau (#13, PR #43), blocage après 5 codes erronés (#16, PR #44). `CHANGELOG.md` (0.1 et 1.0, chaque ligne renvoie à son issue et à sa PR) et README de livraison (PR #45). Analyse et journal alignés sur le sujet révisé remis à 12h02, qui retire l'épreuve Git (PR #46). Backlog : aucune issue ouverte ; #17 et #18 fermées « not planned » avec le label `hors-perimetre` et leur justification.
 
-**Bloqué :**
+**Bloqué :** ~5 min sur un test **intermittent** apparu en relançant la suite : l'ordre des commentaires dépendait du tirage aléatoire des relecteurs ; corrigé dans un commit séparé et relancé trois fois. #17 ayant été sacrifiée, il a fallu une autre façon de rendre visible la présence ajoutée à la main (Q14) : un compteur `presencesAjouteesParFormateur` dans le tableau.
 
-**IA :**
+**IA :** a écrit le code, les tests et le README. Vérifié **depuis un clone vierge** du dépôt GitHub, dans un dossier vide, avec un projet Docker séparé : les trois commandes du README démarrent l'application sur une base neuve (V1 → V3 + démo), le parcours de vérification du README rejoué de bout en bout (note provisoire 13 puis définitive 14,5, clôture puis code refusé en `410`), `./mvnw verify` (446 tests) et `npm ci && npm run build` passent, aucun fichier généré ni secret suivi.
 
 ---
 
