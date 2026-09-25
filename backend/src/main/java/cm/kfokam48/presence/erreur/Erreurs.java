@@ -81,4 +81,9 @@ public final class Erreurs {
         return new ErreurMetierException(HttpStatus.CONFLICT, "RELECTURE_DEJA_RENDUE",
                 "Cette relecture a déjà été rendue : elle est définitive.");
     }
+
+    public static ErreurMetierException sessionDejaCloturee() {
+        return new ErreurMetierException(HttpStatus.CONFLICT, "SESSION_DEJA_CLOTUREE",
+                "Cette session est déjà clôturée.");
+    }
 }

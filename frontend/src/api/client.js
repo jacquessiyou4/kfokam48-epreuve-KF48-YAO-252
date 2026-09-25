@@ -55,3 +55,6 @@ export const rendreRelecture = (relectureId, note, commentaire, relecteurId) =>
 
 // EF11 v2 — mes exercices, note retenue provisoire ou définitive
 export const listerMesExercices = (etudiantId) => requete(`/etudiants/${etudiantId}/exercices`)
+
+// EF10 — clôture de session
+export const cloturerSession = (sessionId) => requete(`/sessions/${sessionId}/cloture`, { methode: 'POST' })

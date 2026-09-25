@@ -54,6 +54,18 @@ public class SessionService {
                 .toList();
     }
 
+    /** EF10 — la clôture fige présences (RG2), dépôts (RG13) et relectures (RG20). */
+    @Transactional
+    public SessionDto cloturer(Long sessionId) {
+        SessionCours session = sessions.findById(sessionId)
+                .orElseThrow(() -> Erreurs.sessionInconnue(sessionId));
+        if (session.estCloturee()) {
+            throw Erreurs.sessionDejaCloturee();
+        }
+        session.cloturer(horloge.instant());
+        return SessionDto.de(session);
+    }
+
     private String codeUnique() {
         for (int i = 0; i < ESSAIS_MAX_CODE; i++) {
             String code = generateurCode.generer();
