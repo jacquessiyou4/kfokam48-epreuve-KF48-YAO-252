@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import cm.kfokam48.presence.domain.Exercice;
+import cm.kfokam48.presence.domain.Presence;
 import cm.kfokam48.presence.domain.Relecture;
+import cm.kfokam48.presence.domain.SourcePresence;
 import cm.kfokam48.presence.domain.StatutExercice;
 import cm.kfokam48.presence.dto.LigneTableauDto;
 import cm.kfokam48.presence.erreur.Erreurs;
@@ -46,7 +48,11 @@ public class TableauService {
         if (!promotions.existsById(promotionId)) {
             throw Erreurs.promotionInconnue(promotionId);
         }
-        Map<Long, Long> presencesParEtudiant = presences.findBySessionPromotionId(promotionId).stream()
+        List<Presence> presencesPromo = presences.findBySessionPromotionId(promotionId);
+        Map<Long, Long> presencesParEtudiant = presencesPromo.stream()
+                .collect(Collectors.groupingBy(p -> p.getEtudiant().getId(), Collectors.counting()));
+        Map<Long, Long> ajouteesParFormateur = presencesPromo.stream()
+                .filter(p -> p.getSource() == SourcePresence.FORMATEUR)
                 .collect(Collectors.groupingBy(p -> p.getEtudiant().getId(), Collectors.counting()));
         List<Exercice> exercicesPromo = exercices.findBySessionPromotionId(promotionId);
         List<Relecture> relecturesPromo = relectures.findAvecExerciceParPromotion(promotionId);
@@ -67,7 +73,8 @@ public class TableauService {
             int exercicesEnAttente = (int) siens.stream().filter(e -> e.getStatut() != StatutExercice.RELU).count();
             return new LigneTableauDto(id, etudiant.getNom(), presencesParEtudiant.getOrDefault(id, 0L).intValue(),
                     siens.size(), Moyenne.deNotesRetenues(notesRetenues), relecturesEnAttente, exercicesEnAttente,
-                    notesRetenues.stream().anyMatch(NoteRetenue::provisoire));
+                    notesRetenues.stream().anyMatch(NoteRetenue::provisoire),
+                    ajouteesParFormateur.getOrDefault(id, 0L).intValue());
         }).toList();
     }
 }

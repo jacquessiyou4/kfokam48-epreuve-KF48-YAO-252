@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Contrat imposé — Épreuve finale KFOKAM48
-  version: "1.3"
+  version: "1.4"
   description: |
     Les cinq opérations décrites ici doivent exister EXACTEMENT ainsi :
     mêmes chemins, mêmes verbes, mêmes codes de statut, même format d'erreur.
@@ -230,6 +230,7 @@ paths:
                     relecturesEnAttente: { type: integer, description: "Relectures que CET étudiant doit encore rendre (RG21)" }
                     exercicesEnAttente: { type: integer, description: "Ajout H8 — ses exercices pas encore RELU, y compris relus partiellement (Q11, RG21)" }
                     moyenneProvisoire: { type: boolean, description: "Ajout v1.3 — vrai si l'une des notes retenues est provisoire (RG23)" }
+                    presencesAjouteesParFormateur: { type: integer, description: "Ajout v1.4 — dont présences ajoutées à la main (Q14, RG15)" }
                     detailPresences:
                       description: "Ajout H8 — une entrée par session de la promotion (Q16)"
                       type: array
