@@ -56,4 +56,29 @@ public final class Erreurs {
         return new ErreurMetierException(HttpStatus.CONFLICT, "SESSION_CLOTUREE",
                 "La session est clôturée : cette opération n'est plus possible.");
     }
+
+    public static ErreurMetierException relectureInconnue(Long id) {
+        return new ErreurMetierException(HttpStatus.NOT_FOUND, "RELECTURE_INCONNUE",
+                "La relecture " + id + " n'existe pas.");
+    }
+
+    public static ErreurMetierException noteInvalide() {
+        return new ErreurMetierException(HttpStatus.BAD_REQUEST, "NOTE_INVALIDE",
+                "La note doit être un nombre entier compris entre 0 et 20.");
+    }
+
+    public static ErreurMetierException autoRelecture() {
+        return new ErreurMetierException(HttpStatus.FORBIDDEN, "AUTO_RELECTURE",
+                "Un étudiant ne peut pas relire son propre exercice.");
+    }
+
+    public static ErreurMetierException relecteurNonAssigne() {
+        return new ErreurMetierException(HttpStatus.FORBIDDEN, "RELECTEUR_NON_ASSIGNE",
+                "Cette relecture est assignée à un autre étudiant.");
+    }
+
+    public static ErreurMetierException relectureDejaRendue() {
+        return new ErreurMetierException(HttpStatus.CONFLICT, "RELECTURE_DEJA_RENDUE",
+                "Cette relecture a déjà été rendue : elle est définitive.");
+    }
 }
