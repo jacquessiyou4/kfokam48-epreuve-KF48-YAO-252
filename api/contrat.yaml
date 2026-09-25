@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Contrat imposé — Épreuve finale KFOKAM48
-  version: "1.5"
+  version: "1.6"
   description: |
     Les cinq opérations décrites ici doivent exister EXACTEMENT ainsi :
     mêmes chemins, mêmes verbes, mêmes codes de statut, même format d'erreur.
@@ -482,6 +482,12 @@ components:
         SESSION_CLOTUREE, SESSION_DEJA_CLOTUREE, ETUDIANT_HORS_PROMOTION,
         PROMOTION_INCONNUE, SESSION_INCONNUE, ETUDIANT_INCONNU,
         RELECTURE_INCONNUE, ERREUR_INTERNE (500, jamais de stack trace).
+
+        Codes techniques de repli, hors des opérations ci-dessus (v1.6) :
+        RESSOURCE_INTROUVABLE (404, adresse inexistante), METHODE_NON_AUTORISEE
+        (405, verbe non prévu sur un chemin existant), TYPE_NON_SUPPORTE (415,
+        corps qui n'est pas du JSON), CONFLIT (409, filet de sécurité quand deux
+        requêtes simultanées violent une contrainte d'unicité, RG3, RG12).
       content:
         application/json:
           schema: { $ref: "#/components/schemas/Erreur" }
