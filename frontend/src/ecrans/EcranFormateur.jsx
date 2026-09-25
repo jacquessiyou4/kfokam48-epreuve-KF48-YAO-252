@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import { chargerTableau, ouvrirSession } from '../api/client.js'
+import { chargerTableau, cloturerSession, listerSessions, ouvrirSession } from '../api/client.js'
 import { useAppel } from '../api/useAppel.js'
 import ChoixPromotion from '../composants/ChoixPromotion.jsx'
 import { Chargement, MessageErreur } from '../composants/Etat.jsx'
+import { useEnvoi } from '../composants/useEnvoi.js'
 
 const heure = (iso) => new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
 
@@ -48,6 +49,38 @@ function OuvrirSession({ promotionId, onOuverte }) {
   )
 }
 
+// EF10 — une session clôturée n'accepte plus ni présence, ni dépôt, ni relecture
+function Session({ session, onChange }) {
+  const envoi = useEnvoi()
+
+  async function cloturer() {
+    if (await envoi.envoyer(() => cloturerSession(session.id), () => 'Session clôturée.')) onChange()
+  }
+
+  return (
+    <li>
+      <p>
+        <strong>{session.titre}</strong> — code {session.code}{' '}
+        {session.cloturee ? <em>(clôturée)</em> : (
+          <button type="button" className="lien" onClick={cloturer} disabled={envoi.envoi}>Clôturer</button>
+        )}
+      </p>
+      <MessageErreur erreur={envoi.erreur} />
+    </li>
+  )
+}
+
+function Sessions({ sessions, onChange }) {
+  if (sessions.chargement) return <Chargement />
+  if (sessions.erreur) return <MessageErreur erreur={sessions.erreur} />
+  if (sessions.donnees.length === 0) return <p>Aucune session.</p>
+  return (
+    <ul className="relectures">
+      {sessions.donnees.map((s) => <Session key={s.id} session={s} onChange={onChange} />)}
+    </ul>
+  )
+}
+
 // EF9 — la moyenne est affichée telle que l'API la calcule (F3)
 function Tableau({ tableau }) {
   if (tableau.chargement) return <Chargement />
@@ -88,6 +121,15 @@ export default function EcranFormateur() {
     () => (promotionId ? chargerTableau(promotionId) : Promise.resolve([])),
     [promotionId],
   )
+  const sessions = useAppel(
+    () => (promotionId ? listerSessions(promotionId) : Promise.resolve([])),
+    [promotionId],
+  )
+
+  function actualiser() {
+    tableau.recharger()
+    sessions.recharger()
+  }
 
   return (
     <section>
@@ -95,8 +137,10 @@ export default function EcranFormateur() {
       <ChoixPromotion valeur={promotionId} onChange={setPromotionId} />
       {promotionId && (
         <>
-          <OuvrirSession promotionId={promotionId} onOuverte={tableau.recharger} />
-          <h3>Tableau de la promotion <button type="button" className="lien" onClick={tableau.recharger}>Actualiser</button></h3>
+          <OuvrirSession promotionId={promotionId} onOuverte={actualiser} />
+          <h3>Sessions</h3>
+          <Sessions sessions={sessions} onChange={actualiser} />
+          <h3>Tableau de la promotion <button type="button" className="lien" onClick={actualiser}>Actualiser</button></h3>
           <Tableau tableau={tableau} />
         </>
       )}
