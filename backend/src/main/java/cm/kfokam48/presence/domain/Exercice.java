@@ -18,6 +18,9 @@ import jakarta.persistence.Table;
 @Table(name = "exercice")
 public class Exercice {
 
+    /** RG7 v2 — nombre de relecteurs d'un exercice déposé depuis le changement de besoin. */
+    public static final int RELECTEURS_REQUIS = 2;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -44,6 +47,10 @@ public class Exercice {
     @Column(name = "modifie_at")
     private Instant modifieAt;
 
+    /** 2 pour un nouveau dépôt ; 1 pour les exercices déposés avant la migration V3 (H13). */
+    @Column(name = "relecteurs_requis", nullable = false)
+    private int relecteursRequis;
+
     protected Exercice() {
     }
 
@@ -53,16 +60,19 @@ public class Exercice {
         this.lien = lien;
         this.deposeAt = deposeAt;
         this.statut = StatutExercice.EN_ATTENTE_RELECTEUR;
+        this.relecteursRequis = RELECTEURS_REQUIS;
     }
 
-    /** T3 / T5 de D4 : un relecteur vient d'être affecté. */
+    /** T3 / T5 de D4 : au moins un relecteur est affecté ; ne fait pas reculer un exercice déjà relu. */
     public void marquerRelecteurAffecte() {
-        this.statut = StatutExercice.EN_ATTENTE_RELECTURE;
+        if (statut == StatutExercice.EN_ATTENTE_RELECTEUR) {
+            this.statut = StatutExercice.EN_ATTENTE_RELECTURE;
+        }
     }
 
-    /** T7 de D4 : la relecture est rendue, état final. */
-    public void marquerRelu() {
-        this.statut = StatutExercice.RELU;
+    /** T7a / T7b de D4 v2 : relu partiellement tant qu'il manque une relecture requise, puis relu. */
+    public void enregistrerRelecturesRendues(int rendues) {
+        this.statut = rendues >= relecteursRequis ? StatutExercice.RELU : StatutExercice.RELU_PARTIELLEMENT;
     }
 
     /** T6 de D4 : le statut ne change pas. */
@@ -97,5 +107,9 @@ public class Exercice {
 
     public Instant getModifieAt() {
         return modifieAt;
+    }
+
+    public int getRelecteursRequis() {
+        return relecteursRequis;
     }
 }

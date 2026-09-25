@@ -1,7 +1,10 @@
 package cm.kfokam48.presence.service;
 
 import java.time.Clock;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.random.RandomGenerator;
 
 import org.springframework.stereotype.Service;
@@ -11,12 +14,11 @@ import cm.kfokam48.presence.domain.Etudiant;
 import cm.kfokam48.presence.domain.Exercice;
 import cm.kfokam48.presence.domain.Presence;
 import cm.kfokam48.presence.domain.Relecture;
-import cm.kfokam48.presence.domain.StatutExercice;
 import cm.kfokam48.presence.repository.ExerciceRepository;
 import cm.kfokam48.presence.repository.PresenceRepository;
 import cm.kfokam48.presence.repository.RelectureRepository;
 
-/** EF6 — le système désigne le relecteur d'un exercice. */
+/** EF6 — le système désigne les deux relecteurs d'un exercice (RG7 v2). */
 @Service
 public class AffectationService {
 
@@ -36,35 +38,38 @@ public class AffectationService {
     }
 
     /**
-     * RG8 : tirage au hasard parmi les présents de la session, auteur exclu (RG6) ; un seul relecteur (RG7).
-     * RG9 : sans relecteur éligible, l'exercice reste EN_ATTENTE_RELECTEUR.
+     * RG7 v2, RG8 : tirage au hasard, sans remise, des relecteurs manquants parmi les présents
+     * de la session — ni l'auteur (RG6), ni un étudiant déjà relecteur de cet exercice.
+     * RG9 : faute d'éligibles, l'exercice attend la prochaine présence.
      */
     @Transactional
     public void affecter(Exercice exercice) {
-        if (relectures.existsByExerciceId(exercice.getId())) {
-            return; // bug #32 : une transaction concurrente vient de l'affecter (RG7)
+        List<Relecture> existantes = relectures.findByExerciceIdOrderByIdAsc(exercice.getId());
+        int manquants = exercice.getRelecteursRequis() - existantes.size();
+        if (manquants <= 0) {
+            return; // bug #32 : une transaction concurrente l'a déjà complété
         }
-        Long auteurId = exercice.getEtudiant().getId();
-        List<Etudiant> eligibles = presences.findBySessionId(exercice.getSession().getId()).stream()
+        Set<Long> exclus = new HashSet<>();
+        exclus.add(exercice.getEtudiant().getId());
+        existantes.forEach(r -> exclus.add(r.getRelecteur().getId()));
+        List<Etudiant> eligibles = new ArrayList<>(presences.findBySessionId(exercice.getSession().getId()).stream()
                 .map(Presence::getEtudiant)
-                .filter(e -> !e.getId().equals(auteurId))
-                .toList();
-        if (eligibles.isEmpty()) {
-            return;
+                .filter(e -> !exclus.contains(e.getId()))
+                .toList());
+        for (int i = 0; i < manquants && !eligibles.isEmpty(); i++) {
+            Etudiant relecteur = eligibles.remove(aleatoire.nextInt(eligibles.size()));
+            relectures.save(new Relecture(exercice, relecteur, horloge.instant()));
+            exercice.marquerRelecteurAffecte();
         }
-        Etudiant relecteur = eligibles.get(aleatoire.nextInt(eligibles.size()));
-        relectures.save(new Relecture(exercice, relecteur, horloge.instant()));
-        exercice.marquerRelecteurAffecte();
     }
 
     /**
-     * RG9 : appelé à chaque nouvelle présence dans la session (transition T5 de D4).
-     * Les exercices en attente sont verrouillés : deux présences simultanées ne peuvent plus
+     * RG9 : appelé à chaque nouvelle présence dans la session (transitions T5 et T8 de D4).
+     * Les exercices à compléter sont verrouillés : deux présences simultanées ne peuvent plus
      * les affecter toutes les deux (bug #32).
      */
     @Transactional
     public void reaffecterEnAttente(Long sessionId) {
-        exercices.verrouillerParSessionEtStatut(sessionId, StatutExercice.EN_ATTENTE_RELECTEUR)
-                .forEach(this::affecter);
+        exercices.verrouillerSansAssezDeRelecteurs(sessionId).forEach(this::affecter);
     }
 }

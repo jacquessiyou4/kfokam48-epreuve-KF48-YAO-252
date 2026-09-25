@@ -10,10 +10,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
-/** Une relecture est créée à l'affectation (note vide) et rendue une seule fois (RG11). */
+/**
+ * Une relecture est créée à l'affectation (note vide) et rendue une seule fois (RG11).
+ * Depuis V3, un exercice a jusqu'à deux relectures, par deux étudiants différents (RG7 v2).
+ */
 @Entity
 @Table(name = "relecture")
 public class Relecture {
@@ -22,8 +24,8 @@ public class Relecture {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "exercice_id", nullable = false, unique = true)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "exercice_id", nullable = false)
     private Exercice exercice;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
