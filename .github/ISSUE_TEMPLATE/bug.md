@@ -35,7 +35,7 @@ Réf. `EFx` · Règles `RGx` · Priorité **Must / Should / Could**
 * [ ] Un test qui reproduit le bug est commité **avant** le correctif, et échoue
 * [ ] Le correctif, dans un commit séparé, fait passer ce test
 * [ ] Migration Flyway versionnée si le schéma change
-* [ ] Branche dédiée, PR qui ferme ce ticket, `main` sain après fusion
+* [ ] Branche dédiée, PR qui ferme cette issue, `main` sain après fusion
 
 ### Références
 

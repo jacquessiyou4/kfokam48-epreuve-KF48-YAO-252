@@ -7,11 +7,13 @@ Toutes les évolutions notables du projet. Chaque ligne renvoie à son issue et 
 Revue après soumission : aucune fonctionnalité nouvelle, aucune migration, contrat inchangé (v1.4).
 
 ### Ajouté
-- Modèles d'issue (story, bug) et de pull request au format de ticket complet : fonctionnement actuel, résultats attendus, non-régression, Definition of Done (#47, PR #50).
+- Modèles d'issue (story, bug) et de pull request au format d'issue complet : fonctionnement actuel, résultats attendus, non-régression, Definition of Done (#47, PR #50).
 - Tests automatiques du frontend avec Vitest : couche API et tableau du formateur, dont la preuve que la moyenne affichée vient de l'API (F3, RG17) ; `npm test` (#48, PR #51).
+- Tests d'intégration des écrans étudiant et relecteur (jsdom + Testing Library, seul `fetch` simulé) : 21 tests frontend au total (#53, PR #54).
 
 ### Documentation
-- Les PR de livraison #45 et #46, ouvertes sans issue, sont rattachées au ticket #49 (#49, PR #52).
+- Les PR de livraison #45 et #46, ouvertes sans issue, sont rattachées à l'issue #49 (#49, PR #52).
+- Un seul terme, « issue », comme le sujet révisé (#55, PR #56).
 
 ## [1.0] — 25/09/2026
 
