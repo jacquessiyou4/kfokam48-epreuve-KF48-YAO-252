@@ -181,7 +181,6 @@ Contraintes que je m'impose :
 - frontend React avec les trois écrans ;
 - `README.md` (installation testée depuis un clone vierge), `CHANGELOG.md` ;
 - trois commits `[JALON] analyse`, `[JALON] v0.1`, `[JALON] v1.0` ;
-- dépôt séparé `kfokam48-gitlab-KF48-YAO-252` pour l'épreuve Git ;
 - `SOUMISSION.md` téléversé sur la plateforme.
 
 ## 10. Démarche prévue
@@ -190,8 +189,9 @@ Contraintes que je m'impose :
 2. **v0.1 (étape 2)** — uniquement les issues **Must**, dans l'ordre des dépendances : socle backend (migrations + données démo) → sessions → présences → exercices + affectation → relectures → tableau → frontend. Une branche et une PR par issue, fusion dans `main` seulement si le build et les tests passent. Puis `[JALON] v0.1`.
 3. **Enveloppe (étape 3)** — lire, ouvrir **d'abord** une issue pour le bug et une pour le changement, re-prioriser le backlog par écrit, reproduire le bug par un test, puis corriger ; l'évolution passe par une nouvelle migration et une mise à jour du contrat ; mise à jour de ce document et des diagrammes dans un commit dédié.
 4. **v1.0 (étape 4)** — issues Should restantes si le temps le permet, `CHANGELOG.md`, `README` testé depuis un clone vierge, backlog restant trié ; `[JALON] v1.0`.
-5. **Épreuve Git (étape 5)** — dans un dépôt séparé, environ 20 minutes, commencée au plus tard vers 16h00.
-6. **Soumission (étape 6)** — relever les hash, vérifier les liens en navigation privée, téléverser avant 17h30.
+5. **Soumission (étape 5)** — relever le hash du dernier commit, vérifier le lien en navigation privée, téléverser avant 17h30.
+
+*Mise à jour (sujet révisé, remis à 12h02) : l'épreuve Git séparée a été retirée du sujet ; il reste cinq étapes et un seul dépôt à déclarer.*
 
 **Si je prends du retard :** je sacrifie dans l'ordre EF14 (Could), puis EF12 et EF13 (Should). Je ne sacrifie jamais les jalons, le journal, les tests ni le `README`.
 
