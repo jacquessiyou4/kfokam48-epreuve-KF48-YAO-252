@@ -2,6 +2,7 @@ package cm.kfokam48.presence.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -49,20 +50,24 @@ public class TableauService {
                 .collect(Collectors.groupingBy(p -> p.getEtudiant().getId(), Collectors.counting()));
         List<Exercice> exercicesPromo = exercices.findBySessionPromotionId(promotionId);
         List<Relecture> relecturesPromo = relectures.findAvecExerciceParPromotion(promotionId);
+        Map<Long, List<Relecture>> relecturesParExercice = relecturesPromo.stream()
+                .collect(Collectors.groupingBy(r -> r.getExercice().getId()));
 
         return etudiants.findByPromotionIdOrderByNomAsc(promotionId).stream().map(etudiant -> {
             Long id = etudiant.getId();
             List<Exercice> siens = exercicesPromo.stream().filter(e -> e.getEtudiant().getId().equals(id)).toList();
-            List<Integer> notesRecues = relecturesPromo.stream()
-                    .filter(r -> r.estRendue() && r.getExercice().getEtudiant().getId().equals(id))
-                    .map(Relecture::getNote)
+            // RG17 v2 : moyenne des notes retenues (RG22), provisoire si l'une l'est (RG23)
+            List<NoteRetenue> notesRetenues = siens.stream()
+                    .map(e -> NoteRetenue.de(e, relecturesParExercice.getOrDefault(e.getId(), List.of())))
+                    .filter(Objects::nonNull)
                     .toList();
             int relecturesEnAttente = (int) relecturesPromo.stream()
                     .filter(r -> !r.estRendue() && r.getRelecteur().getId().equals(id))
                     .count();
             int exercicesEnAttente = (int) siens.stream().filter(e -> e.getStatut() != StatutExercice.RELU).count();
             return new LigneTableauDto(id, etudiant.getNom(), presencesParEtudiant.getOrDefault(id, 0L).intValue(),
-                    siens.size(), Moyenne.de(notesRecues), relecturesEnAttente, exercicesEnAttente);
+                    siens.size(), Moyenne.deNotesRetenues(notesRetenues), relecturesEnAttente, exercicesEnAttente,
+                    notesRetenues.stream().anyMatch(NoteRetenue::provisoire));
         }).toList();
     }
 }
