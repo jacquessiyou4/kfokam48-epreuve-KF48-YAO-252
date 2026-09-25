@@ -4,7 +4,7 @@ Toutes les évolutions notables du projet. Chaque ligne renvoie à son issue et 
 
 ## [1.0.1] — 25/09/2026
 
-Revue après soumission : aucune fonctionnalité nouvelle, aucune migration ; contrat v1.4 → v1.5 (retrait d'une opération morte).
+Revue après soumission : aucune fonctionnalité nouvelle, aucune migration ; contrat v1.4 → v1.6 (retrait d'une opération morte, codes d'erreur de repli documentés).
 
 ### Ajouté
 - Modèles d'issue (story, bug) et de pull request au format d'issue complet : fonctionnement actuel, résultats attendus, non-régression, Definition of Done (#47, PR #50).
@@ -17,6 +17,9 @@ Revue après soumission : aucune fonctionnalité nouvelle, aucune migration ; co
 
 ### Retiré
 - `PUT /api/exercices/{id}` et ses codes `PAS_AUTEUR`, `EXERCICE_INCONNU` retirés du contrat (v1.5) : l'opération décrivait EF14, sacrifiée à l'étape 3 (#18), et n'a jamais été exposée. Chaque opération du contrat est désormais implémentée (#57, PR #58).
+
+### Documentation du contrat
+- Les quatre codes d'erreur de repli du gestionnaire centralisé (`RESSOURCE_INTROUVABLE`, `METHODE_NON_AUTORISEE`, `TYPE_NON_SUPPORTE`, `CONFLIT`) sont listés dans le contrat v1.6 : l'API ne renvoie plus aucun code non documenté (#59, PR #60).
 
 ## [1.0] — 25/09/2026
 
