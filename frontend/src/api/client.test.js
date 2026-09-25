@@ -40,12 +40,40 @@ describe('couche API', () => {
   })
 
   it("garde le statut quand l'erreur n'a pas de corps", async () => {
+    vi.stubGlobal('fetch', vi.fn(() => reponse(404)))
+
+    const erreur = await listerPromotions().catch((e) => e)
+
+    expect(erreur.statut).toBe(404)
+    expect(erreur.code).toBe('INCONNUE')
+  })
+
+  it('explique un backend arrêté quand nginx répond par une page HTML 502', async () => {
+    const pageNginx = '<html>\n<head><title>502 Bad Gateway</title></head>\n</html>'
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(new Response(pageNginx, { status: 502 }))))
+
+    const erreur = await listerPromotions().catch((e) => e)
+
+    expect(erreur).toBeInstanceOf(ErreurApi)
+    expect(erreur.code).toBe('SERVEUR_INJOIGNABLE')
+    expect(erreur.message).toBe('Serveur injoignable. Réessayez dans un instant.')
+  })
+
+  it('explique un backend arrêté quand le relais répond 503 sans corps', async () => {
     vi.stubGlobal('fetch', vi.fn(() => reponse(503)))
 
     const erreur = await listerPromotions().catch((e) => e)
 
-    expect(erreur.statut).toBe(503)
-    expect(erreur.code).toBe('INCONNUE')
+    expect(erreur.code).toBe('SERVEUR_INJOIGNABLE')
+  })
+
+  it("signale une réponse qui n'est pas du JSON sans exposer l'erreur de parsing", async () => {
+    vi.stubGlobal('fetch', vi.fn(() => Promise.resolve(new Response('<!doctype html>', { status: 200 }))))
+
+    const erreur = await listerPromotions().catch((e) => e)
+
+    expect(erreur.code).toBe('REPONSE_INVALIDE')
+    expect(erreur.message).not.toMatch(/JSON|token/)
   })
 
   it('signale une panne réseau par le code RESEAU', async () => {

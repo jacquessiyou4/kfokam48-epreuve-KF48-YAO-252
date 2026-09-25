@@ -9,6 +9,23 @@ export class ErreurApi extends Error {
   }
 }
 
+// Réponse sans JSON en 5xx : c'est le relais (nginx, Vite) qui répond à la place d'un backend arrêté ;
+// le backend, lui, renvoie toujours { code, message }.
+function erreurSansJson(statut) {
+  return statut >= 500
+    ? new ErreurApi(statut, 'SERVEUR_INJOIGNABLE', 'Serveur injoignable. Réessayez dans un instant.')
+    : new ErreurApi(statut, 'REPONSE_INVALIDE', `Réponse inattendue du serveur (statut ${statut}).`)
+}
+
+function lireJson(texte) {
+  if (!texte) return null
+  try {
+    return JSON.parse(texte)
+  } catch {
+    return undefined
+  }
+}
+
 async function requete(chemin, { methode = 'GET', corps } = {}) {
   let reponse
   try {
@@ -20,8 +37,8 @@ async function requete(chemin, { methode = 'GET', corps } = {}) {
   } catch {
     throw new ErreurApi(0, 'RESEAU', 'Serveur injoignable. Vérifiez votre connexion.')
   }
-  const texte = await reponse.text()
-  const donnees = texte ? JSON.parse(texte) : null
+  const donnees = lireJson(await reponse.text())
+  if (donnees === undefined || (donnees === null && reponse.status >= 500)) throw erreurSansJson(reponse.status)
   if (!reponse.ok) {
     throw new ErreurApi(reponse.status, donnees?.code ?? 'INCONNUE', donnees?.message ?? `Erreur ${reponse.status}`)
   }
