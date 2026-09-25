@@ -70,6 +70,13 @@ cd backend
 ./mvnw verify
 ```
 
+Frontend, sans backend ni navigateur (Vitest : couche API et tableau du formateur) :
+
+```bash
+cd frontend
+npm ci && npm test
+```
+
 ## Documentation
 
 | Document | Contenu |
