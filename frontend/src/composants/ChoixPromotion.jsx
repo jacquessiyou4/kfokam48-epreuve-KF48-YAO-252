@@ -5,7 +5,7 @@ import { Chargement, MessageErreur } from './Etat.jsx'
 export default function ChoixPromotion({ valeur, onChange }) {
   const promotions = useAppel(listerPromotions, [])
   if (promotions.chargement) return <Chargement />
-  if (promotions.erreur) return <MessageErreur erreur={promotions.erreur} />
+  if (promotions.erreur) return <MessageErreur erreur={promotions.erreur} onReessayer={promotions.recharger} />
   return (
     <>
       <label htmlFor="promotion">Promotion</label>

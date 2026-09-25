@@ -59,7 +59,7 @@ export default function ChoixEtudiant({ children }) {
   return (
     <section>
       <h2>Qui êtes-vous ?</h2>
-      {promotions.chargement ? <Chargement /> : <MessageErreur erreur={promotions.erreur} />}
+      {promotions.chargement ? <Chargement /> : <MessageErreur erreur={promotions.erreur} onReessayer={promotions.recharger} />}
       {promotions.donnees && (
         <>
           <label htmlFor="promotion">Promotion</label>
@@ -69,7 +69,7 @@ export default function ChoixEtudiant({ children }) {
           </select>
         </>
       )}
-      {promotionId && (etudiants.chargement ? <Chargement /> : <MessageErreur erreur={etudiants.erreur} />)}
+      {promotionId && (etudiants.chargement ? <Chargement /> : <MessageErreur erreur={etudiants.erreur} onReessayer={etudiants.recharger} />)}
       {promotionId && etudiants.donnees && (
         <>
           <label htmlFor="etudiant">Votre nom</label>

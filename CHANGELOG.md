@@ -11,6 +11,9 @@ Revue après soumission : aucune fonctionnalité nouvelle, aucune migration ; co
 - Tests automatiques du frontend avec Vitest : couche API et tableau du formateur, dont la preuve que la moyenne affichée vient de l'API (F3, RG17) ; `npm test` (#48, PR #51).
 - Tests d'intégration des écrans étudiant et relecteur (jsdom + Testing Library, seul `fetch` simulé) : 21 tests frontend au total (#53, PR #54).
 
+### Corrigé
+- Backend arrêté : l'écran affiche « Serveur injoignable » et un bouton **Réessayer** au lieu de l'erreur de parsing JSON de la page 502 de nginx ; la clôture d'une session, définitive, se confirme dans la page avant l'appel. Tests frontend : 27 (#61, PR #62).
+
 ### Documentation
 - Les PR de livraison #45 et #46, ouvertes sans issue, sont rattachées à l'issue #49 (#49, PR #52).
 - Un seul terme, « issue », comme le sujet révisé (#55, PR #56).

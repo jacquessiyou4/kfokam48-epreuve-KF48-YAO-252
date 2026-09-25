@@ -70,7 +70,7 @@ cd backend
 ./mvnw verify
 ```
 
-Frontend, sans backend ni navigateur (Vitest) : tests unitaires de la couche API et du tableau du formateur, tests d'intégration des écrans étudiant et relecteur (jsdom + Testing Library, seul `fetch` est simulé) :
+Frontend, sans backend ni navigateur (Vitest) : tests unitaires de la couche API et du tableau du formateur, tests d'intégration des écrans étudiant, relecteur et formateur (jsdom + Testing Library, seul `fetch` est simulé), dont le serveur injoignable et la confirmation de clôture :
 
 ```bash
 cd frontend

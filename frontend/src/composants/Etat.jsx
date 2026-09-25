@@ -3,7 +3,13 @@ export function Chargement() {
   return <p aria-live="polite">Chargement…</p>
 }
 
-export function MessageErreur({ erreur }) {
+// onReessayer : pour une erreur de chargement, relance l'appel sans recharger la page.
+export function MessageErreur({ erreur, onReessayer }) {
   if (!erreur) return null
-  return <p className="erreur" role="alert">{erreur.message}</p>
+  return (
+    <p className="erreur" role="alert">
+      {erreur.message}
+      {onReessayer && <>{' '}<button type="button" className="lien" onClick={onReessayer}>Réessayer</button></>}
+    </p>
+  )
 }
