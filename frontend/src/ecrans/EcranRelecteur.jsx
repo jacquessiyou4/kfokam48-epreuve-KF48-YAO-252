@@ -36,7 +36,7 @@ function MesRelectures({ etudiant }) {
   const relectures = useAppel(() => listerRelectures(etudiant.id), [etudiant.id])
 
   if (relectures.chargement) return <Chargement />
-  if (relectures.erreur) return <MessageErreur erreur={relectures.erreur} />
+  if (relectures.erreur) return <MessageErreur erreur={relectures.erreur} onReessayer={relectures.recharger} />
   if (relectures.donnees.length === 0) return <p>Aucune relecture ne vous est assignée.</p>
 
   return (

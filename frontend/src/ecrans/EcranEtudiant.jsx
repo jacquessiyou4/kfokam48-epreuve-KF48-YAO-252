@@ -16,7 +16,7 @@ const LIBELLES_STATUT = {
 function MesExercices({ etudiant, version }) {
   const exercices = useAppel(() => listerMesExercices(etudiant.id), [etudiant.id, version])
   if (exercices.chargement) return <Chargement />
-  if (exercices.erreur) return <MessageErreur erreur={exercices.erreur} />
+  if (exercices.erreur) return <MessageErreur erreur={exercices.erreur} onReessayer={exercices.recharger} />
   return (
     <section>
       <h3>Mes exercices</h3>
@@ -84,7 +84,7 @@ function DeposerExercice({ etudiant, onDepose }) {
   }
 
   if (sessions.chargement) return <Chargement />
-  if (sessions.erreur) return <MessageErreur erreur={sessions.erreur} />
+  if (sessions.erreur) return <MessageErreur erreur={sessions.erreur} onReessayer={sessions.recharger} />
   const ouvertes = sessions.donnees.filter((s) => !s.cloturee)
 
   return (

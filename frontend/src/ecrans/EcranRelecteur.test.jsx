@@ -73,3 +73,24 @@ describe('écran relecteur', () => {
     expect(await screen.findByText('Aucune relecture ne vous est assignée.')).toBeTruthy()
   })
 })
+
+describe('écran relecteur — serveur injoignable', () => {
+  it('explique que le serveur est injoignable, puis recharge la liste avec « Réessayer » (F3)', async () => {
+    let backendDemarre = false
+    simulerApi({
+      'GET /api/promotions': [200, []],
+      'GET /api/etudiants/4/relectures': () => (backendDemarre ? [200, [A_RELIRE]] : [502, undefined]),
+    })
+    const utilisateur = userEvent.setup()
+    render(<EcranRelecteur />)
+
+    const alerte = await screen.findByRole('alert')
+    expect(alerte.textContent).toContain('Serveur injoignable')
+
+    backendDemarre = true
+    await utilisateur.click(screen.getByRole('button', { name: 'Réessayer' }))
+
+    expect(await screen.findByRole('link', { name: "ouvrir l'exercice" })).toBeTruthy()
+    expect(screen.queryByRole('alert')).toBeNull()
+  })
+})
