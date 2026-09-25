@@ -197,7 +197,7 @@ Contraintes que je m'impose :
 
 **Re-priorisation écrite après l'enveloppe (v2) :** EF14 (#18) et EF13 (#17) sont **sacrifiées** ; EF11 (#15) devient Must et est absorbée par #35. Détail et justification dans le commentaire de l'issue #33 et dans le journal.
 
-**Definition of Done — un ticket est terminé quand :**
+**Definition of Done — une issue est terminée quand :**
 - ses critères d'acceptation sont vérifiés (test automatisé ou vérification manuelle décrite dans la PR) ;
 - le code est sur une branche dédiée, fusionné par une PR qui référence l'issue (`Closes #n`) ;
 - `./mvnw verify` et `npm run build` passent sur `main` après la fusion ;
