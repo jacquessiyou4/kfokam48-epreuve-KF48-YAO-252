@@ -39,6 +39,7 @@ class TableauControllerIntegrationTest {
                 .andExpect(jsonPath("$[0].moyenne").value(15.0))
                 .andExpect(jsonPath("$[0].relecturesEnAttente").value(0))
                 .andExpect(jsonPath("$[0].exercicesEnAttente").value(1))
+                .andExpect(jsonPath("$[0].moyenneProvisoire").value(false))
                 // BELINGA : doit encore la relecture 7
                 .andExpect(jsonPath("$[1].moyenne").value(12.0))
                 .andExpect(jsonPath("$[1].relecturesEnAttente").value(1))
