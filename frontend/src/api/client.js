@@ -31,3 +31,11 @@ async function requete(chemin, { methode = 'GET', corps } = {}) {
 // EF2 — promotions et étudiants
 export const listerPromotions = () => requete('/promotions')
 export const listerEtudiants = (promotionId) => requete(`/promotions/${promotionId}/etudiants`)
+
+// EF1 — sessions
+export const ouvrirSession = (titre, promotionId) =>
+  requete('/sessions', { methode: 'POST', corps: { titre, promotionId: Number(promotionId) } })
+export const listerSessions = (promotionId) => requete(`/sessions?promotionId=${promotionId}`)
+
+// EF9 — tableau du formateur
+export const chargerTableau = (promotionId) => requete(`/tableau?promotionId=${promotionId}`)

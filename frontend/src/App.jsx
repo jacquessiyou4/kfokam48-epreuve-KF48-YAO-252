@@ -1,4 +1,5 @@
 import { Link, Route, Routes } from 'react-router-dom'
+import EcranFormateur from './ecrans/EcranFormateur.jsx'
 
 function Accueil() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
       <main>
         <Routes>
           <Route path="/" element={<Accueil />} />
+          <Route path="/formateur" element={<EcranFormateur />} />
           <Route path="*" element={<p>Page introuvable. <Link to="/">Retour à l'accueil</Link></p>} />
         </Routes>
       </main>

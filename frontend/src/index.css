@@ -15,3 +15,6 @@ button { cursor: pointer; margin-top: 8px; }
 table { border-collapse: collapse; width: 100%; }
 th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; }
 button.lien { width: auto; margin: 0 0 0 8px; padding: 2px 8px; }
+.code-presence { margin-top: 12px; padding: 12px; border: 2px solid #1b5e20; border-radius: 8px; background: #fff; }
+.code { font-size: 2.5rem; font-weight: 700; letter-spacing: 0.2em; margin: 4px 0; }
+td.attente { background: #fff3cd; font-weight: 700; }
