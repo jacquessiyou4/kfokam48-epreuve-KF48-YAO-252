@@ -24,14 +24,17 @@ public class PresenceService {
     private final SessionCoursRepository sessions;
     private final EtudiantRepository etudiants;
     private final AffectationService affectation;
+    private final LimiteurTentatives limiteur;
     private final Clock horloge;
 
     public PresenceService(PresenceRepository presences, SessionCoursRepository sessions,
-            EtudiantRepository etudiants, AffectationService affectation, Clock horloge) {
+            EtudiantRepository etudiants, AffectationService affectation, LimiteurTentatives limiteur,
+            Clock horloge) {
         this.presences = presences;
         this.sessions = sessions;
         this.etudiants = etudiants;
         this.affectation = affectation;
+        this.limiteur = limiteur;
         this.horloge = horloge;
     }
 
@@ -40,8 +43,12 @@ public class PresenceService {
     public PresenceDto marquer(String code, Long etudiantId) {
         Etudiant etudiant = etudiants.findById(etudiantId)
                 .orElseThrow(() -> Erreurs.etudiantInconnu(etudiantId));
-        SessionCours session = sessions.findByCode(normaliser(code))
-                .orElseThrow(Erreurs::codeInconnu);                                   // RG4
+        limiteur.verifierNonBloque(etudiantId);                                       // RG5
+        SessionCours session = sessions.findByCode(normaliser(code)).orElse(null);
+        if (session == null) {
+            limiteur.enregistrerEchec(etudiantId);
+            throw Erreurs.codeInconnu();                                              // RG4
+        }
         if (!etudiant.appartientA(session.getPromotion())) {
             throw Erreurs.etudiantHorsPromotion();                                    // RG19
         }
@@ -53,6 +60,7 @@ public class PresenceService {
             throw Erreurs.dejaPresent();                                              // RG3
         }
         Presence presence = presences.save(new Presence(session, etudiant, SourcePresence.ETUDIANT, maintenant));
+        limiteur.reinitialiser(etudiantId);
         affectation.reaffecterEnAttente(session.getId());                             // RG9
         return PresenceDto.de(presence);
     }

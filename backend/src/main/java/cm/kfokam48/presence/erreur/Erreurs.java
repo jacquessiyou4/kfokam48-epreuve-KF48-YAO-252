@@ -86,4 +86,9 @@ public final class Erreurs {
         return new ErreurMetierException(HttpStatus.CONFLICT, "SESSION_DEJA_CLOTUREE",
                 "Cette session est déjà clôturée.");
     }
+
+    public static ErreurMetierException tropDeTentatives() {
+        return new ErreurMetierException(HttpStatus.TOO_MANY_REQUESTS, "TROP_DE_TENTATIVES",
+                "Trop de codes erronés : réessayez dans deux minutes.");
+    }
 }
