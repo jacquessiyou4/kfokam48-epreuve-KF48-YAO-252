@@ -48,7 +48,8 @@ class PresenceServiceTest {
     }
 
     private PresenceService serviceA(Instant instant) {
-        return new PresenceService(presences, sessions, etudiants, Clock.fixed(instant, ZoneOffset.UTC));
+        return new PresenceService(presences, sessions, etudiants, mock(AffectationService.class),
+                Clock.fixed(instant, ZoneOffset.UTC));
     }
 
     @Test
