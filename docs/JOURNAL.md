@@ -62,8 +62,12 @@ Chaque entrée répond aux trois mêmes questions :
 
 ---
 
-## Étape 5 — Soumission
+## Étape 5 — Soumission (12h10)
 
-**Fait :**
+**Fait :** dépôt vérifié public depuis une session non connectée, `git status` propre, `SOUMISSION.md` rempli avec le hash complet du commit final (ce commit-ci) et téléversé sur la plateforme.
 
 **Ce que je referais autrement avec une journée de plus :**
+- Poser le nom et la forme de chaque identifiant manquant dans le contrat dès l'analyse (le `relecteurId` de H1 aurait mérité d'être obligatoire si l'authentification avait été dans le périmètre).
+- Tester la concurrence dès la v0.1 : le bug #32 existait depuis le premier dépôt d'exercice sans relecteur, un test à deux threads l'aurait montré avant le client.
+- Écrire les migrations en pensant tout de suite à H2 **et** PostgreSQL (le piège de l'index unique sous H2 en V3).
+- Livrer les deux écrans sacrifiés (#17, #18) et ajouter des tests de bout en bout du frontend, vérifié ici à la main et par l'API.
