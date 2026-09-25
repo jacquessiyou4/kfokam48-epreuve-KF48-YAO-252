@@ -39,3 +39,11 @@ export const listerSessions = (promotionId) => requete(`/sessions?promotionId=${
 
 // EF9 — tableau du formateur
 export const chargerTableau = (promotionId) => requete(`/tableau?promotionId=${promotionId}`)
+
+// EF3 — présence par code
+export const marquerPresence = (code, etudiantId) =>
+  requete('/presences', { methode: 'POST', corps: { code, etudiantId } })
+
+// EF5 — dépôt d'exercice
+export const deposerExercice = (sessionId, etudiantId, lien) =>
+  requete('/exercices', { methode: 'POST', corps: { sessionId: Number(sessionId), etudiantId, lien } })
