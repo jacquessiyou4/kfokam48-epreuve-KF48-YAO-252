@@ -20,13 +20,15 @@ Chaque entrée répond aux trois mêmes questions :
 
 ---
 
-## Étape 2 — Première version
+## Étape 2 — Première version (10h37 → 11h35)
 
-**Fait :**
+**Fait :** les 12 issues Must (#1 à #12), une branche et une PR chacune (PR #19 à #31, dont un correctif Docker #27). Backend : migrations V1 (schéma = D2) et V2 (démo), 5 opérations imposées + 5 ajoutées, erreurs centralisées, 376 tests (unitaires sur RG1-RG10, RG17, ENF6 ; intégration sur chaque code HTTP du contrat ; nombre de requêtes du tableau mesuré pour ENF2). Frontend React : couche `src/api/client.js`, écrans formateur, étudiant, relecteur. `docker compose up --build` vérifié de bout en bout.
 
-**Bloqué :**
+**Bloqué :** ~25 min sur la construction Docker : `mvnw dependency:go-offline` figé à 0 Ko/s (connexion morte, délai Maven trop long) — diagnostiqué en mesurant le trafic réseau du conteneur, corrigé par délais + tentatives + cache BuildKit (PR #27). ~5 min sur Spring Boot 4, seule version proposée par Spring Initializr (paquets de test déplacés). ~10 min sur des tests qui se polluaient via une base H2 partagée : d'abord un contournement, puis la vraie correction (une base par contexte). ~10 min sur l'extension de navigateur automatisée, instable : vérification finale faite en partie par l'API et Chrome headless.
 
-**IA :**
+**IA :** a écrit le code et les tests. Vérifié par : les migrations appliquées sur un vrai PostgreSQL 16 (pas seulement H2) ; chaque règle de gestion couverte par un test qui échouerait sans elle ; un piège repéré en relisant : Jackson tronquait `12.5` en `12` — la note est lue en décimal pour renvoyer `NOTE_INVALIDE` ; les écrans essayés dans le navigateur (session ouverte, présence enregistrée avec un code en minuscules, rendu en 360 px).
+
+**À signaler :** le fichier `ENVELOPPE.md` de l'étape 3 m'a été remis à 11h09, avant le jalon `v0.1`. Je l'ai lu, mais rien n'a été conçu ni codé en conséquence avant ce jalon : la v0.1 applique toujours Q6 (un seul relecteur), comme prévu à l'étape 1.
 
 ---
 
