@@ -9,20 +9,20 @@ flowchart LR
     R["«acteur»<br/>Relecteur<br/>(étudiant désigné)"]
     S["«acteur»<br/>Système"]
 
-        UC1(["Ouvrir une session<br/>et obtenir le code — EF1"])
-        UC2(["Ajouter une présence<br/>à la main — EF4"])
-        UC3(["Clôturer une session — EF10"])
-        UC4(["Consulter le tableau — EF9, EF13"])
-        UC5(["Se choisir dans la liste — EF2"])
-        UC6(["Marquer sa présence<br/>avec le code — EF3"])
-        UC7(["Déposer le lien<br/>de son exercice — EF5"])
-        UC8(["Remplacer le lien — EF14"])
-        UC9(["Voir sa note<br/>et son commentaire — EF11"])
-        UC10(["Voir ses relectures<br/>à faire — EF7"])
-        UC11(["Rendre une note<br/>et un commentaire — EF8"])
-        UC12(["Affecter un relecteur<br/>au hasard — EF6"])
-        UC13(["Bloquer après<br/>5 codes erronés — EF12"])
-        UC14(["Faire expirer le code<br/>après 15 min — RG1"])
+        UC1(["Ouvrir une session<br/>et obtenir le code<br/>EF1"])
+        UC2(["Ajouter une présence<br/>à la main<br/>EF4"])
+        UC3(["Clôturer<br/>une session<br/>EF10"])
+        UC4(["Consulter<br/>le tableau<br/>EF9 · EF13"])
+        UC5(["Se choisir<br/>dans la liste<br/>EF2"])
+        UC6(["Marquer sa présence<br/>avec le code<br/>EF3"])
+        UC7(["Déposer le lien<br/>de son exercice<br/>EF5"])
+        UC8(["Remplacer<br/>le lien<br/>EF14"])
+        UC9(["Voir sa note<br/>et son commentaire<br/>EF11"])
+        UC10(["Voir ses relectures<br/>à faire<br/>EF7"])
+        UC11(["Rendre une note<br/>et un commentaire<br/>EF8"])
+        UC12(["Affecter un relecteur<br/>au hasard<br/>EF6"])
+        UC13(["Bloquer après<br/>5 codes erronés<br/>EF12"])
+        UC14(["Faire expirer le code<br/>après 15 min<br/>RG1"])
 
     F --- UC1
     F --- UC2
