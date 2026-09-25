@@ -18,3 +18,5 @@ button.lien { width: auto; margin: 0 0 0 8px; padding: 2px 8px; }
 .code-presence { margin-top: 12px; padding: 12px; border: 2px solid #1b5e20; border-radius: 8px; background: #fff; }
 .code { font-size: 2.5rem; font-weight: 700; letter-spacing: 0.2em; margin: 4px 0; }
 td.attente { background: #fff3cd; font-weight: 700; }
+.saisie-code { font-size: 1.6rem; letter-spacing: 0.3em; text-transform: uppercase; }
+section section { margin-top: 20px; }
