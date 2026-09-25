@@ -58,3 +58,7 @@ export const listerMesExercices = (etudiantId) => requete(`/etudiants/${etudiant
 
 // EF10 — clôture de session
 export const cloturerSession = (sessionId) => requete(`/sessions/${sessionId}/cloture`, { methode: 'POST' })
+
+// EF4 — présence ajoutée par le formateur (Q14)
+export const ajouterPresence = (sessionId, etudiantId) =>
+  requete(`/sessions/${sessionId}/presences`, { methode: 'POST', corps: { etudiantId: Number(etudiantId) } })

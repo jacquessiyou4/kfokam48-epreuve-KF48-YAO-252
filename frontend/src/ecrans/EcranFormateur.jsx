@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { chargerTableau, cloturerSession, listerSessions, ouvrirSession } from '../api/client.js'
+import {
+  ajouterPresence, chargerTableau, cloturerSession, listerEtudiants, listerSessions, ouvrirSession,
+} from '../api/client.js'
 import { useAppel } from '../api/useAppel.js'
 import ChoixPromotion from '../composants/ChoixPromotion.jsx'
 import { Chargement, MessageErreur } from '../composants/Etat.jsx'
@@ -50,7 +52,34 @@ function OuvrirSession({ promotionId, onOuverte }) {
 }
 
 // EF10 — une session clôturée n'accepte plus ni présence, ni dépôt, ni relecture
-function Session({ session, onChange }) {
+// EF4 — le formateur ajoute une présence (Q14), marquée source = FORMATEUR
+function AjouterPresence({ session, etudiants, onChange }) {
+  const [etudiantId, setEtudiantId] = useState('')
+  const envoi = useEnvoi()
+
+  async function soumettre(e) {
+    e.preventDefault()
+    if (await envoi.envoyer(() => ajouterPresence(session.id, etudiantId), () => 'Présence ajoutée par le formateur.')) {
+      setEtudiantId('')
+      onChange()
+    }
+  }
+
+  return (
+    <form onSubmit={soumettre}>
+      <label htmlFor={`ajout-${session.id}`}>Ajouter une présence à la main</label>
+      <select id={`ajout-${session.id}`} value={etudiantId} onChange={(e) => setEtudiantId(e.target.value)} required>
+        <option value="">— étudiant —</option>
+        {etudiants.map((x) => <option key={x.id} value={x.id}>{x.nom}</option>)}
+      </select>
+      <button type="submit" disabled={envoi.envoi}>Ajouter</button>
+      {envoi.succes && <p className="succes" role="status">{envoi.succes}</p>}
+      <MessageErreur erreur={envoi.erreur} />
+    </form>
+  )
+}
+
+function Session({ session, etudiants, onChange }) {
   const envoi = useEnvoi()
 
   async function cloturer() {
@@ -66,17 +95,18 @@ function Session({ session, onChange }) {
         )}
       </p>
       <MessageErreur erreur={envoi.erreur} />
+      {!session.cloturee && <AjouterPresence session={session} etudiants={etudiants} onChange={onChange} />}
     </li>
   )
 }
 
-function Sessions({ sessions, onChange }) {
+function Sessions({ sessions, etudiants, onChange }) {
   if (sessions.chargement) return <Chargement />
   if (sessions.erreur) return <MessageErreur erreur={sessions.erreur} />
   if (sessions.donnees.length === 0) return <p>Aucune session.</p>
   return (
     <ul className="relectures">
-      {sessions.donnees.map((s) => <Session key={s.id} session={s} onChange={onChange} />)}
+      {sessions.donnees.map((s) => <Session key={s.id} session={s} etudiants={etudiants} onChange={onChange} />)}
     </ul>
   )
 }
@@ -99,7 +129,12 @@ function Tableau({ tableau }) {
           {tableau.donnees.map((l) => (
             <tr key={l.etudiantId}>
               <td>{l.nom}</td>
-              <td>{l.presences}</td>
+              <td>
+                {l.presences}
+                {l.presencesAjouteesParFormateur > 0 && (
+                  <span className="provisoire"> dont {l.presencesAjouteesParFormateur} ajoutée(s) par le formateur</span>
+                )}
+              </td>
               <td>{l.exercicesDeposes}</td>
               <td>
                 {l.moyenne ?? '—'}
@@ -125,6 +160,10 @@ export default function EcranFormateur() {
     () => (promotionId ? listerSessions(promotionId) : Promise.resolve([])),
     [promotionId],
   )
+  const etudiants = useAppel(
+    () => (promotionId ? listerEtudiants(promotionId) : Promise.resolve([])),
+    [promotionId],
+  )
 
   function actualiser() {
     tableau.recharger()
@@ -139,7 +178,7 @@ export default function EcranFormateur() {
         <>
           <OuvrirSession promotionId={promotionId} onOuverte={actualiser} />
           <h3>Sessions</h3>
-          <Sessions sessions={sessions} onChange={actualiser} />
+          <Sessions sessions={sessions} etudiants={etudiants.donnees ?? []} onChange={actualiser} />
           <h3>Tableau de la promotion <button type="button" className="lien" onClick={actualiser}>Actualiser</button></h3>
           <Tableau tableau={tableau} />
         </>
