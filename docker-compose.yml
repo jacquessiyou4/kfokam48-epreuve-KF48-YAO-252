@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: presence
+      POSTGRES_USER: presence
+      POSTGRES_PASSWORD: presence   # base locale de démonstration uniquement
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U presence -d presence"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  backend:
+    build: ./backend
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/presence
+      DB_USER: presence
+      DB_PASSWORD: presence
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"   # port hôte modifiable si 8080 est déjà pris
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "${FRONTEND_PORT:-5173}:80"   # port hôte modifiable
+    depends_on:
+      - backend
