@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: Contrat imposé — Épreuve finale KFOKAM48
-  version: "1.2"
+  version: "1.3"
   description: |
     Les cinq opérations décrites ici doivent exister EXACTEMENT ainsi :
     mêmes chemins, mêmes verbes, mêmes codes de statut, même format d'erreur.
@@ -226,9 +226,10 @@ paths:
                     nom: { type: string }
                     presences: { type: integer }
                     exercicesDeposes: { type: integer }
-                    moyenne: { type: number, nullable: true, description: "Arrondie à 2 décimales, null sans note (RG17)" }
+                    moyenne: { type: number, nullable: true, description: "v1.3 — moyenne des notes retenues (RG22), 2 décimales, null sans note (RG17)" }
                     relecturesEnAttente: { type: integer, description: "Relectures que CET étudiant doit encore rendre (RG21)" }
-                    exercicesEnAttente: { type: integer, description: "Ajout H8 — ses exercices pas encore relus (Q11)" }
+                    exercicesEnAttente: { type: integer, description: "Ajout H8 — ses exercices pas encore RELU, y compris relus partiellement (Q11, RG21)" }
+                    moyenneProvisoire: { type: boolean, description: "Ajout v1.3 — vrai si l'une des notes retenues est provisoire (RG23)" }
                     detailPresences:
                       description: "Ajout H8 — une entrée par session de la promotion (Q16)"
                       type: array
@@ -379,8 +380,10 @@ paths:
     get:
       tags: [ajouté]
       x-ajout: true
-      summary: Les exercices d'un étudiant, avec la note et le commentaire reçus
-      description: EF11 · RG16 (Q8) — la réponse ne contient JAMAIS le relecteur
+      summary: Les exercices d'un étudiant, avec la note retenue et les commentaires reçus
+      description: |
+        EF11 · RG16 (Q8), RG22, RG23 — la réponse ne contient JAMAIS les relecteurs.
+        v1.3 : note retenue = moyenne des relectures rendues, `noteProvisoire` tant qu'il en manque une.
       parameters:
         - name: id
           in: path
@@ -476,15 +479,19 @@ components:
 
     ExerciceDeLEtudiant:
       type: object
-      required: [id, sessionId, sessionTitre, lien, statut]
+      required: [id, sessionId, sessionTitre, lien, statut, noteProvisoire, commentaires]
       properties:
         id: { type: integer, format: int64 }
         sessionId: { type: integer, format: int64 }
         sessionTitre: { type: string }
         lien: { type: string }
         statut: { $ref: "#/components/schemas/StatutExercice" }
-        note: { type: integer, nullable: true }
-        commentaire: { type: string, nullable: true }
+        noteRetenue: { type: number, nullable: true, description: "v1.3 — moyenne des relectures rendues (RG22), null si aucune" }
+        noteProvisoire: { type: boolean, description: "v1.3 — vrai tant qu'une relecture requise manque (RG23)" }
+        commentaires:
+          type: array
+          description: "v1.3 — commentaires des relectures rendues, sans leur auteur (RG16)"
+          items: { type: string }
 
     RelectureAFaire:
       type: object
