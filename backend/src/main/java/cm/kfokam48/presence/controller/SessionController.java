@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,5 +37,10 @@ public class SessionController {
     @GetMapping
     public List<SessionDto> lister(@RequestParam Long promotionId) {
         return service.lister(promotionId);
+    }
+
+    @PostMapping("/{id}/cloture")
+    public SessionDto cloturer(@PathVariable Long id) {
+        return service.cloturer(id);
     }
 }
